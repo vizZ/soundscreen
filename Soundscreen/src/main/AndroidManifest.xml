@@ -27,6 +27,19 @@
 
         <activity android:name=".SoundscreenPreferenceActivity" />
 
+        <service
+            android:name=".SoundscreenWallpaperService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/soundscreen" />
+
+        </service>
     </application>
 
 </manifest>

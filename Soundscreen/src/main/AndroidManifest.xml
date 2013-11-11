@@ -40,6 +40,10 @@
                 android:resource="@xml/soundscreen" />
 
         </service>
+
+        <provider
+            android:authorities="com.arturglier.mobile.android.soundscreen.data.DataContentProvider"
+            android:name=".data.DataContentProvider" />
     </application>
 
 </manifest>

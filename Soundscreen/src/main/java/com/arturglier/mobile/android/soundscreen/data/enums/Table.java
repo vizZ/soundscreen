@@ -1,12 +1,12 @@
 package com.arturglier.mobile.android.soundscreen.data.enums;
 
 import com.arturglier.mobile.android.soundscreen.data.DataContract;
-import com.arturglier.mobile.android.soundscreen.data.contracts.Tracks;
+import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
 
 public enum Table {
-    TRACKS(Tracks.class);
     USERS(UsersContract.class),
+    TRACKS(TracksContract.class);
 
     private final DataContract contract;
 

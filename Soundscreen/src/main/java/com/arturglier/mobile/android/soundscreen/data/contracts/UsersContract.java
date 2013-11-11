@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.arturglier.mobile.android.soundscreen.data.DataContract;
 
-public class Users implements DataContract, UsersColumns {
+public class UsersContract implements DataContract, UsersColumns {
     public static final String MODEL_NAME = "user";
     public static final String TABLE_NAME = "users";
 

@@ -2,8 +2,6 @@ package com.arturglier.mobile.android.soundscreen.data.contracts;
 
 import android.net.Uri;
 
-import com.arturglier.mobile.android.soundscreen.data.DataContract;
-
 public class TracksContract implements DataContract, TracksColumns {
     public static final String MODEL_NAME = "track";
     public static final String TABLE_NAME = "tracks";

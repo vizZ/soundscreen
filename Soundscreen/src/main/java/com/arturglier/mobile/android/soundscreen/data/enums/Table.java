@@ -1,6 +1,6 @@
 package com.arturglier.mobile.android.soundscreen.data.enums;
 
-import com.arturglier.mobile.android.soundscreen.data.DataContract;
+import com.arturglier.mobile.android.soundscreen.data.contracts.DataContract;
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
 import com.arturglier.mobile.android.soundscreen.data.matchers.DataMatcher;

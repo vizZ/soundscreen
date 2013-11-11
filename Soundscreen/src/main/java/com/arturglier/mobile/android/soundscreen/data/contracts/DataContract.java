@@ -1,6 +1,8 @@
-package com.arturglier.mobile.android.soundscreen.data;
+package com.arturglier.mobile.android.soundscreen.data.contracts;
 
 import android.net.Uri;
+
+import com.arturglier.mobile.android.soundscreen.data.DataProvider;
 
 public interface DataContract {
     Uri COMMON_CONTENT_URI = DataProvider.CONTENT_URI;

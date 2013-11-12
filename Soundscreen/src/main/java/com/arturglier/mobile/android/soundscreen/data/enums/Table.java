@@ -18,9 +18,17 @@ public enum Table {
     public final DataMatcher matcher;
     public final DataHelper helper;
 
-    Table(Class<? extends DataContract> contractClass, Class<? extends DataMatcher> matcherClass, Class<? extends DataHelper> helperClass) throws IllegalAccessException, InstantiationException {
-        this.contract = contractClass.newInstance();
-        this.matcher = matcherClass.newInstance();
-        this.helper = helperClass.newInstance();
+    Table(Class<? extends DataContract> contractClass, Class<? extends DataMatcher> matcherClass, Class<? extends DataHelper> helperClass) throws ExceptionInInitializerError {
+        try {
+            this.contract = contractClass.newInstance();
+            this.matcher = matcherClass.newInstance();
+            this.helper = helperClass.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            throw new ExceptionInInitializerError(e.getMessage());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            throw new ExceptionInInitializerError(e.getMessage());
+        }
     }
 }

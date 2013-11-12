@@ -3,9 +3,18 @@ package com.arturglier.mobile.android.soundscreen.net;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+
+import com.arturglier.mobile.android.soundscreen.BuildConfig;
+import com.soundcloud.api.ApiWrapper;
+import com.soundcloud.api.Http;
+import com.soundcloud.api.Request;
+
+import org.apache.http.HttpResponse;
+
+import java.io.IOException;
 
 public class SoundcloudService extends IntentService {
-
     public static final String KEY_REQUEST_TYPE = "request_type";
 
     public static final int VAL_REQUEST_TYPE_NONE = 0;
@@ -49,6 +58,14 @@ public class SoundcloudService extends IntentService {
     }
 
     private void handleFetchFavorites() {
+        ApiWrapper wrapper = new ApiWrapper(BuildConfig.CLIENT_ID, BuildConfig.CLIENT_SECRET, null, null);
+        HttpResponse resp = null;
+        try {
+            resp = wrapper.get(Request.to("/users/mr-scruff/tracks.json"));
 
+            Log.d("REQUEST_FAVORITES", Http.formatJSON(Http.getString(resp)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

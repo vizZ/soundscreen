@@ -38,6 +38,11 @@ public class SQLColumn {
         return this.table;
     }
 
+    public SQLTable asIntegerNotNullReferences(String table, String... columns) {
+        this.type = String.format("INTEGER NOT NULL REFERENCES %1$s(%2$s)", table, TextUtils.join(",", columns));
+        return this.table;
+    }
+
     public String create() {
         StringBuilder builder = new StringBuilder();
 

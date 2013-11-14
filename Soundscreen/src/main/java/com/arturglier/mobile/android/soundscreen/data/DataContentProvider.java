@@ -57,7 +57,16 @@ public class DataContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mDatabase.getWritableDatabase();
+
+        switch (sUriMatcher.match(uri)) {
+            case UsersMatcher.USERS:
+                return db.delete(UsersContract.TABLE_NAME, null, null);
+            case TracksMatcher.TRACKS:
+                return db.delete(TracksContract.TABLE_NAME, null, null);
+            default:
+                throw new UnsupportedOperationException("Unsupported URI: " + uri);
+        }
     }
 
     @Override

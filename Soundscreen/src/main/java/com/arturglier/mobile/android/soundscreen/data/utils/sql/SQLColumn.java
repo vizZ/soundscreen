@@ -18,6 +18,11 @@ public class SQLColumn {
         return this.table;
     }
 
+    public SQLTable asIntegerPrimaryKey() {
+        this.type = "INTEGER PRIMARY KEY";
+        return this.table;
+    }
+
     public SQLTable asText() {
         this.type = "TEXT";
         return this.table;

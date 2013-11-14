@@ -8,7 +8,7 @@ public class TracksMatcher implements DataMatcher {
 
     @Override
     public void addURIsTo(CommonUriMatcher matcher) {
-        matcher.addURI(USERS, PATH_TRACKS);
-        matcher.addURI(USERS_ID, PATH_TRACKS, NUMBER);
+        matcher.addURI(TRACKS, PATH_TRACKS);
+        matcher.addURI(TRACKS_ID, PATH_TRACKS, NUMBER);
     }
 }

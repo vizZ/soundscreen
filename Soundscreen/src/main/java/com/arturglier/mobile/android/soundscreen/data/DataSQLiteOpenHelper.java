@@ -9,7 +9,7 @@ import com.arturglier.mobile.android.soundscreen.data.enums.Table;
 public class DataSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "soundscreen.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     public DataSQLiteOpenHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

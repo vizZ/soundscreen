@@ -3,12 +3,15 @@ package com.arturglier.mobile.android.soundscreen.data.helpers;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
+import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
 
 public class TracksHelper implements DataHelper {
 
     private static final String CREATE_TABLE_TRACKS =
         SQL.table(TracksContract.TABLE_NAME)
-            .column(TracksContract._ID).asIntegerPrimaryKeyAutoincrement()
+            .column(TracksContract._ID).asIntegerPrimaryKey()
+            .column(TracksContract.ID).asIntegerNotNullUniqueOnConflictReplace()
+            .column(TracksContract.USER_ID).asIntegerNotNullReferences(UsersContract.TABLE_NAME, UsersContract.ID)
             .column(TracksContract.URI).asText()
             .column(TracksContract.PERMA_LINK).asText()
             .column(TracksContract.TITLE).asText()
@@ -30,6 +33,9 @@ public class TracksHelper implements DataHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " does not support this operation");
+        if (oldVersion == 1) {
+            db.execSQL("DROP TABLE IF EXISTS " + TracksContract.TABLE_NAME);
+            db.execSQL(CREATE_TABLE_TRACKS);
+        }
     }
 }

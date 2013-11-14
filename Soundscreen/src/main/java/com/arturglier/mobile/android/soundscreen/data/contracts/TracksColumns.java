@@ -6,6 +6,8 @@ public interface TracksColumns extends CommonColumns {
     String GENRE = "genre";
     String DESCRIPTION = "description";
 
+    String USER_ID = "user_id";
+
     String WAVEFORM_URL = "waveform_url";
 
     String PLAYBACK_COUNT = "playback_count";

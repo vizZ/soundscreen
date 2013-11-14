@@ -7,7 +7,8 @@ import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
 public class UsersHelper implements DataHelper {
     private static final String CREATE_TABLE_USERS =
         SQL.table(UsersContract.TABLE_NAME)
-            .column(UsersContract._ID).asIntegerPrimaryKeyAutoincrement()
+            .column(UsersContract._ID).asIntegerPrimaryKey()
+            .column(UsersContract.ID).asIntegerNotNullUniqueOnConflictReplace()
             .column(UsersContract.URI).asText()
             .column(UsersContract.PERMA_LINK).asText()
             .column(UsersContract.USERNAME).asText()
@@ -21,6 +22,9 @@ public class UsersHelper implements DataHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " does not support this operation");
+        if(oldVersion == 1) {
+            db.execSQL("DROP TABLE IF EXISTS " + UsersContract.TABLE_NAME);
+            db.execSQL(CREATE_TABLE_USERS);
+        }
     }
 }

@@ -4,7 +4,13 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+
+import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
+import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
+import com.arturglier.mobile.android.soundscreen.data.matchers.TracksMatcher;
+import com.arturglier.mobile.android.soundscreen.data.matchers.UsersMatcher;
 
 public class DataContentProvider extends ContentProvider {
 
@@ -13,7 +19,7 @@ public class DataContentProvider extends ContentProvider {
 
     private DataSQLiteOpenHelper mDatabase;
 
-    private static final UriMatcher sTableMatcher = new DataUriMatcher();
+    private static final UriMatcher sUriMatcher = new DataUriMatcher();
 
     @Override
     public boolean onCreate() {
@@ -33,7 +39,20 @@ public class DataContentProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        SQLiteDatabase db = mDatabase.getWritableDatabase();
+
+        switch (sUriMatcher.match(uri)) {
+            case UsersMatcher.USERS:
+                return UsersContract.CONTENT_URI.buildUpon().appendPath(
+                    String.valueOf(db.insert(UsersContract.TABLE_NAME, null, values))
+                ).build();
+            case TracksMatcher.TRACKS:
+                return TracksContract.CONTENT_URI.buildUpon().appendPath(
+                    String.valueOf(db.insert(TracksContract.TABLE_NAME, null, values))
+                ).build();
+            default:
+                throw new UnsupportedOperationException("Unsupported URI: " + uri);
+        }
     }
 
     @Override

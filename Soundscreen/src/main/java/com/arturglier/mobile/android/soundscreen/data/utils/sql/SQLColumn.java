@@ -33,6 +33,11 @@ public class SQLColumn {
         return this.table;
     }
 
+    public SQLTable asIntegerNotNullUniqueOnConflictReplace() {
+        this.type = "INTEGER NOT NULL UNIQUE ON CONFLICT REPLACE";
+        return this.table;
+    }
+
     public String create() {
         StringBuilder builder = new StringBuilder();
 

@@ -7,11 +7,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
+import android.util.Log;
 
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
 import com.arturglier.mobile.android.soundscreen.data.matchers.TracksMatcher;
 import com.arturglier.mobile.android.soundscreen.data.matchers.UsersMatcher;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
 
 public class DataContentProvider extends ContentProvider {
 
@@ -21,6 +28,14 @@ public class DataContentProvider extends ContentProvider {
     private DataSQLiteOpenHelper mDatabase;
 
     private static final UriMatcher sUriMatcher = new DataUriMatcher();
+
+    private static final HashMap<String, String> MIME_TYPES = new HashMap<String, String>();
+
+    static {
+        MIME_TYPES.put(".png", "image/png");
+        MIME_TYPES.put(".jpeg", "image/jpeg");
+        MIME_TYPES.put(".jpg", "image/jpg");
+    }
 
     @Override
     public boolean onCreate() {
@@ -47,7 +62,18 @@ public class DataContentProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        return null;
+        switch (sUriMatcher.match(uri)) {
+            case TracksMatcher.TRACKS_ID_WAVEFORM:
+                for (String extension : MIME_TYPES.keySet()) {
+                    if (uri.toString().endsWith(extension)) {
+                        return (MIME_TYPES.get(extension));
+                    } else {
+                        throw new UnsupportedOperationException("Unsupported MIME TYPE: " + uri);
+                    }
+                }
+            default:
+                throw new UnsupportedOperationException("Unsupported URI: " + uri);
+        }
     }
 
     @Override
@@ -85,5 +111,51 @@ public class DataContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
+    }
+
+    @Override
+    public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
+        switch (sUriMatcher.match(uri)) {
+            case TracksMatcher.TRACKS_ID_WAVEFORM:
+                int imode = 0;
+
+                if (!getContext().getFilesDir().exists()) {
+                    getContext().getFilesDir().mkdirs();
+                }
+
+                File file = getFile(getContext().getFilesDir(), uri, mode);
+
+                if (mode.contains("w")) imode |= ParcelFileDescriptor.MODE_WRITE_ONLY;
+                if (mode.contains("r")) imode |= ParcelFileDescriptor.MODE_READ_ONLY;
+                if (mode.contains("+")) imode |= ParcelFileDescriptor.MODE_APPEND;
+
+                Log.d("MODE", "Mode: " + mode + ", imode: " + imode);
+                Log.d("FILE", "File: " + file.getAbsoluteFile());
+
+                return ParcelFileDescriptor.open(file, imode);
+            default:
+                throw new UnsupportedOperationException("Unsupported URI: " + uri);
+        }
+    }
+
+    private File getFile(File root, Uri uri, String mode) throws FileNotFoundException {
+        File file = new File(root, uri.getPath());
+        if (!file.exists()) {
+            if (mode.contains("w")) {
+                File parent = file.getParentFile();
+                if (parent != null) {
+                    parent.mkdirs();
+                }
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // TODO: digg what to do as a best practice
+                }
+            } else {
+                throw new FileNotFoundException(uri.getPath());
+            }
+        }
+        return file;
     }
 }

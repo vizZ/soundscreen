@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
@@ -29,7 +30,19 @@ public class DataContentProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+        SQLiteDatabase db = mDatabase.getWritableDatabase();
+
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+
+        switch (sUriMatcher.match(uri)) {
+            case TracksMatcher.TRACKS_ID:
+                builder.appendWhere(TracksContract.ID + "=" + uri.getLastPathSegment());
+            case TracksMatcher.TRACKS:
+                builder.setTables(TracksContract.TABLE_NAME);
+                return builder.query(db, null, selection, selectionArgs, null, null, null);
+            default:
+                throw new UnsupportedOperationException("Unsupported URI: " + uri);
+        }
     }
 
     @Override

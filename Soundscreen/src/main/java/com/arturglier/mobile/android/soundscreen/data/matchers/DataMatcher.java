@@ -12,6 +12,7 @@ public interface DataMatcher {
 
     public static final int TRACKS = 200;
     public static final int TRACKS_ID = 201;
+    public static final int TRACKS_ID_WAVEFORM = 202;
 
     public void addURIsTo(CommonUriMatcher matcher);
 }

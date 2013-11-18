@@ -35,15 +35,23 @@ public class SoundcloudService extends IntentService {
     private static final Gson sGson = new Gson();
 
     public static void fetchFavorites(Context context) {
+        context.startService(getFavoritesIntent(context));
+    }
+
+    private static Intent getFavoritesIntent(Context context) {
         Intent intent = new Intent(context, SoundcloudService.class);
         intent.putExtra(KEY_REQUEST_TYPE, VAL_REQUEST_TYPE_FAVORITES);
-        context.startService(intent);
+        return intent;
     }
 
     public static void fetchWaveforms(Context context) {
+        context.startService(getWaveformsIntent(context));
+    }
+
+    private static Intent getWaveformsIntent(Context context) {
         Intent intent = new Intent(context, SoundcloudService.class);
         intent.putExtra(KEY_REQUEST_TYPE, VAL_REQUEST_TYPE_WAVEFORMS);
-        context.startService(intent);
+        return intent;
     }
 
 

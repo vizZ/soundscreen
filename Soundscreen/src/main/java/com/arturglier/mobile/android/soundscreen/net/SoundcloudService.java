@@ -1,6 +1,8 @@
 package com.arturglier.mobile.android.soundscreen.net;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +16,7 @@ import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
 import com.arturglier.mobile.android.soundscreen.data.models.Track;
 import com.arturglier.mobile.android.soundscreen.data.models.User;
+import com.arturglier.mobile.android.soundscreen.net.receivers.ScheduledUpdateReceiver;
 import com.google.gson.Gson;
 import com.soundcloud.api.ApiWrapper;
 import com.soundcloud.api.Http;
@@ -23,6 +26,7 @@ import org.apache.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class SoundcloudService extends IntentService {
     public static final String KEY_REQUEST_TYPE = "request_type";
@@ -33,6 +37,9 @@ public class SoundcloudService extends IntentService {
 
     private static final ApiWrapper sWrapper = new ApiWrapper(BuildConfig.CLIENT_ID, BuildConfig.CLIENT_SECRET, null, null);
     private static final Gson sGson = new Gson();
+
+    // TODO: this is gonna be set by the preferences
+    private static final long EXEC_INTERVAL = TimeUnit.MINUTES.toMillis(15);
 
     public static void fetchFavorites(Context context) {
         context.startService(getFavoritesIntent(context));
@@ -54,6 +61,23 @@ public class SoundcloudService extends IntentService {
         return intent;
     }
 
+    public static void schedule(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, ScheduledUpdateReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), EXEC_INTERVAL, pendingIntent);
+    }
+
+    public static void cancel(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, ScheduledUpdateReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        alarmManager.cancel(pendingIntent);
+    }
 
     public SoundcloudService() {
         super(SoundcloudService.class.getSimpleName());

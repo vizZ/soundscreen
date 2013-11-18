@@ -63,7 +63,7 @@ public class DataContentProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         switch (sUriMatcher.match(uri)) {
-            case TracksMatcher.TRACKS_ID_WAVEFORM:
+            case TracksMatcher.TRACKS_ID_WAVEFORMS:
                 for (String extension : MIME_TYPES.keySet()) {
                     if (uri.toString().endsWith(extension)) {
                         return (MIME_TYPES.get(extension));
@@ -116,7 +116,7 @@ public class DataContentProvider extends ContentProvider {
     @Override
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
         switch (sUriMatcher.match(uri)) {
-            case TracksMatcher.TRACKS_ID_WAVEFORM:
+            case TracksMatcher.TRACKS_ID_WAVEFORMS:
                 int imode = 0;
 
                 if (!getContext().getFilesDir().exists()) {

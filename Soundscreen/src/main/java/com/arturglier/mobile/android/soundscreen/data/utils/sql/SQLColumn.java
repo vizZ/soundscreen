@@ -43,6 +43,15 @@ public class SQLColumn {
         return this.table;
     }
 
+    public SQLTable asBooleanNotNullWithDefault(String value) {
+        if (value == null || !(SQLBuilder.TRUE.equals(value) || SQLBuilder.FALSE.equals(value))) {
+            throw new IllegalArgumentException();
+        } else {
+            this.type = String.format("BOOLEAN NOT NULL DEFAULT " + String.valueOf(value));
+            return this.table;
+        }
+    }
+
     public String create() {
         StringBuilder builder = new StringBuilder();
 

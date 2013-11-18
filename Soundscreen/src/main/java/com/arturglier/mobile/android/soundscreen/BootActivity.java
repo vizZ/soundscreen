@@ -4,11 +4,11 @@ import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.arturglier.mobile.android.soundscreen.net.SoundcloudService;
 
-public class BootActivity extends ActionBarActivity {
+public class BootActivity extends SherlockActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

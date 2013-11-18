@@ -1,6 +1,6 @@
 package com.arturglier.mobile.android.soundscreen;
 
-import android.preference.PreferenceActivity;
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
-public class SoundscreenPreferenceActivity extends PreferenceActivity {
+public class SoundscreenPreferenceActivity extends SherlockPreferenceActivity {
 }

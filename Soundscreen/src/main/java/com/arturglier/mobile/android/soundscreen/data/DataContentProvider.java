@@ -118,7 +118,27 @@ public class DataContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mDatabase.getWritableDatabase();
+
+        SelectionBuilder builder = new SelectionBuilder();
+
+        switch (sUriMatcher.match(uri)) {
+            case TracksMatcher.TRACKS_ID:
+                builder.where(TracksContract._ID + "=?", uri.getLastPathSegment());
+            case TracksMatcher.TRACKS:
+                String cached = uri.getQueryParameter(TracksContract.CACHED);
+                if (cached != null) {
+                    builder.where(TracksContract.CACHED + "=?", cached);
+                }
+                String used = uri.getQueryParameter(TracksContract.USED);
+                if (used != null) {
+                    builder.where(TracksContract.USED + "=?", used);
+                }
+                builder.table(TracksContract.TABLE_NAME);
+                return builder.update(db, values);
+            default:
+                throw new UnsupportedOperationException("Unsupported URI: " + uri);
+        }
     }
 
     @Override

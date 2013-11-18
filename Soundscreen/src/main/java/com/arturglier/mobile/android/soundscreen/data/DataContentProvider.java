@@ -113,9 +113,23 @@ public class DataContentProvider extends ContentProvider {
                 return db.delete(UsersContract.TABLE_NAME, null, null);
             case TracksMatcher.TRACKS:
                 return db.delete(TracksContract.TABLE_NAME, null, null);
+            case TracksMatcher.TRACKS_WAVEFORMS:
+                return deleteAllWaveforms();
             default:
                 throw new UnsupportedOperationException("Unsupported URI: " + uri);
         }
+    }
+
+    private int deleteAllWaveforms() {
+        int count = 0;
+        File dir = new File(getContext().getFilesDir(), "waveforms");
+        if (dir.exists()) {
+            for (File file : dir.listFiles()) {
+                file.delete();
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override

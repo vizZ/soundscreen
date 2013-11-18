@@ -11,8 +11,10 @@ import android.util.Log;
 
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
+import com.arturglier.mobile.android.soundscreen.data.dao.TracksDAO;
 import com.arturglier.mobile.android.soundscreen.data.matchers.TracksMatcher;
 import com.arturglier.mobile.android.soundscreen.data.matchers.UsersMatcher;
+import com.arturglier.mobile.android.soundscreen.data.models.Track;
 import com.arturglier.mobile.android.soundscreen.data.utils.sql.SelectionBuilder;
 
 import java.io.File;
@@ -145,13 +147,26 @@ public class DataContentProvider extends ContentProvider {
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
         switch (sUriMatcher.match(uri)) {
             case TracksMatcher.TRACKS_ID_WAVEFORMS:
+
+                Track track = new TracksDAO(getContext()).get(TracksContract.buildUri(Long.valueOf(uri.getPathSegments().get(1))));
+
+                Log.d("WAVEFORM_URL", track.getWaveformUrl());
+                Log.d("WAVEFORM_URL", Uri.parse(track.getWaveformUrl()).getLastPathSegment());
+
+                String fileName = Uri.parse(track.getWaveformUrl()).getLastPathSegment();
+
                 int imode = 0;
 
                 if (!getContext().getFilesDir().exists()) {
                     getContext().getFilesDir().mkdirs();
                 }
 
-                File file = getFile(getContext().getFilesDir(), uri, mode);
+                File waveformsDir = new File(getContext().getFilesDir(), "waveforms");
+                if (!waveformsDir.exists()) {
+                    waveformsDir.mkdirs();
+                }
+
+                File file = getFile(new File(waveformsDir, fileName), uri, mode);
 
                 if (mode.contains("w")) imode |= ParcelFileDescriptor.MODE_WRITE_ONLY;
                 if (mode.contains("r")) imode |= ParcelFileDescriptor.MODE_READ_ONLY;
@@ -166,8 +181,7 @@ public class DataContentProvider extends ContentProvider {
         }
     }
 
-    private File getFile(File root, Uri uri, String mode) throws FileNotFoundException {
-        File file = new File(root, uri.getPath());
+    private File getFile(File file, Uri uri, String mode) throws FileNotFoundException {
         if (!file.exists()) {
             if (mode.contains("w")) {
                 File parent = file.getParentFile();
@@ -178,7 +192,7 @@ public class DataContentProvider extends ContentProvider {
                     file.createNewFile();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    // TODO: digg what to do as a best practice
+                    // TODO: add some better handling
                 }
             } else {
                 throw new FileNotFoundException(uri.getPath());

@@ -49,6 +49,7 @@
         <provider
             android:authorities="com.arturglier.mobile.android.soundscreen.data.DataContentProvider"
             android:name=".data.DataContentProvider" />
+        <receiver android:name=".net.receivers.ScheduledUpdateReceiver"/>
     </application>
 
 </manifest>

@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
@@ -14,6 +13,7 @@ import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
 import com.arturglier.mobile.android.soundscreen.data.matchers.TracksMatcher;
 import com.arturglier.mobile.android.soundscreen.data.matchers.UsersMatcher;
+import com.arturglier.mobile.android.soundscreen.data.utils.sql.SelectionBuilder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,14 +47,14 @@ public class DataContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase db = mDatabase.getWritableDatabase();
 
-        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        SelectionBuilder builder = new SelectionBuilder();
 
         switch (sUriMatcher.match(uri)) {
             case TracksMatcher.TRACKS_ID:
-                builder.appendWhere(TracksContract.ID + "=" + uri.getLastPathSegment());
+                builder.where(TracksContract._ID + "=?", uri.getLastPathSegment());
             case TracksMatcher.TRACKS:
-                builder.setTables(TracksContract.TABLE_NAME);
-                return builder.query(db, null, selection, selectionArgs, null, null, null);
+                builder.table(TracksContract.TABLE_NAME);
+                return builder.query(db, projection, sortOrder);
             default:
                 throw new UnsupportedOperationException("Unsupported URI: " + uri);
         }

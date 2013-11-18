@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
+import com.arturglier.mobile.android.soundscreen.data.utils.sql.CursorHelper;
 import com.google.gson.annotations.SerializedName;
 
 public class Track extends Common {
@@ -40,8 +41,23 @@ public class Track extends Common {
     @SerializedName("user")
     private User user;
 
+    private Boolean cached;
+    private Boolean used;
+
     public Track(Cursor cursor) {
         super(cursor);
+
+        CursorHelper helper = new CursorHelper(cursor);
+
+        setTitle(helper.getString(TracksContract.TITLE));
+        setDuration(helper.getLong(TracksContract.DURATION));
+        setDescription(helper.getString(TracksContract.DESCRIPTION));
+        setWaveformUrl(helper.getString(TracksContract.WAVEFORM_URL));
+        setPlaybackCount(helper.getInt(TracksContract.PLAYBACK_COUNT));
+        setDownloadCount(helper.getInt(TracksContract.DOWNLOAD_COUNT));
+        setFavoritingsCount(helper.getInt(TracksContract.FAVORITINGS_COUNT));
+        setCommentCount(helper.getInt(TracksContract.COMMENT_COUNT));
+        setUserId(helper.getInt(TracksContract.USER_ID));
     }
 
     public String getTitle() {
@@ -145,6 +161,24 @@ public class Track extends Common {
         values.put(TracksContract.DOWNLOAD_COUNT, getDownloadCount());
         values.put(TracksContract.FAVORITINGS_COUNT, getFavoritingsCount());
         values.put(TracksContract.COMMENT_COUNT, getCommentCount());
+        values.put(TracksContract.CACHED, isCached());
+        values.put(TracksContract.USED, wasUsed());
         return values;
+    }
+
+    public boolean isCached() {
+        return cached == null || cached == Boolean.FALSE ? false : true;
+    }
+
+    public void setCached(Boolean cached) {
+        this.cached = cached;
+    }
+
+    public boolean wasUsed() {
+        return used == null || used == Boolean.FALSE ? false : true;
+    }
+
+    public void setUsed(Boolean used) {
+        this.used = used;
     }
 }

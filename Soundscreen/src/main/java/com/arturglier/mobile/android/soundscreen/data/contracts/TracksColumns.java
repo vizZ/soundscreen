@@ -14,4 +14,7 @@ public interface TracksColumns extends CommonColumns {
     String DOWNLOAD_COUNT = "download_count";
     String FAVORITINGS_COUNT = "favoritings_count";
     String COMMENT_COUNT = "comment_count";
+
+    String CACHED = "cached";
+    String USED = "used";
 }

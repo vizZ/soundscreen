@@ -53,6 +53,14 @@ public class DataContentProvider extends ContentProvider {
             case TracksMatcher.TRACKS_ID:
                 builder.where(TracksContract._ID + "=?", uri.getLastPathSegment());
             case TracksMatcher.TRACKS:
+                String cached = uri.getQueryParameter(TracksContract.CACHED);
+                if (cached != null) {
+                    builder.where(TracksContract.CACHED + "=?", cached);
+                }
+                String used = uri.getQueryParameter(TracksContract.USED);
+                if (used != null) {
+                    builder.where(TracksContract.USED + "=?", used);
+                }
                 builder.table(TracksContract.TABLE_NAME);
                 return builder.query(db, projection, sortOrder);
             default:

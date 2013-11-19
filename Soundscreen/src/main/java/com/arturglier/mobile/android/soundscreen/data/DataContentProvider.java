@@ -209,7 +209,7 @@ public class DataContentProvider extends ContentProvider {
                     // TODO: add some better handling
                 }
             } else {
-                throw new FileNotFoundException(uri.getPath());
+                throw new FileNotFoundException(uri.getPath() + ", " + file.getName());
             }
         }
         return file;

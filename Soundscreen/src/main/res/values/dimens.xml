@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="duration_entry_15sec">15</integer>
+    <integer name="duration_entry_30sec">30</integer>
+    <integer name="duration_entry_1min">60</integer>
+    <integer name="duration_entry_5min">300</integer>
+</resources>

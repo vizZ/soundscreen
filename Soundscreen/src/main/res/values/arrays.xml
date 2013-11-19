@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_duration_entries">
+        <item>@string/pref_duration_entry_15sec</item>
+        <item>@string/pref_duration_entry_30sec</item>
+        <item>@string/pref_duration_entry_1min</item>
+        <item>@string/pref_duration_entry_5min</item>
+    </string-array>
+    <string-array name="pref_duration_values">
+        <item>@string/duration_entry_15sec</item>
+        <item>@string/duration_entry_30sec</item>
+        <item>@string/duration_entry_1min</item>
+        <item>@string/duration_entry_5min</item>
+    </string-array>
+</resources>

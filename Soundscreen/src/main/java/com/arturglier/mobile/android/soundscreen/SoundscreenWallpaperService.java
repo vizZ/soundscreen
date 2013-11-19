@@ -1,6 +1,7 @@
 package com.arturglier.mobile.android.soundscreen;
 
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.service.wallpaper.WallpaperService;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -23,49 +25,60 @@ import java.util.concurrent.TimeUnit;
 
 public class SoundscreenWallpaperService extends WallpaperService {
 
-    private class SoundscreenEngine extends Engine {
+    private class SoundscreenEngine extends Engine implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         private Handler mHandler = new Handler();
+        private long mDuration = TimeUnit.SECONDS.toMillis(15);
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if (key.equals(getString(R.string.pref_duration))) {
+                int duration = sharedPreferences.getInt(key, getResources().getInteger(R.integer.duration_entry_15sec));
+                mDuration = TimeUnit.SECONDS.toMillis(duration);
+            }
+        }
 
         private class NextImage implements Runnable {
 
             @Override
             public void run() {
-                Cursor cursor = getContentResolver().query(TracksContract.scheduled(), null, null, null, "RANDOM() LIMIT 1");
-                if (cursor.moveToFirst()) {
-                    Long _id = null;
-                    try {
-                        _id = cursor.getLong(cursor.getColumnIndexOrThrow(TracksContract._ID));
-                    } finally {
-                        cursor.close();
-                    }
-
-                    if (_id != null) {
-                        Uri trackUri = TracksContract.buildUri(_id);
-
-                        Bitmap image = null;
-                        InputStream fis = null;
+                if (isVisible()) {
+                    Cursor cursor = getContentResolver().query(TracksContract.scheduled(), null, null, null, "RANDOM() LIMIT 1");
+                    if (cursor.moveToFirst()) {
+                        Long _id = null;
                         try {
-                            fis = getContentResolver().openInputStream(TracksContract.buildWaveformUri(trackUri));
-                            image = BitmapFactory.decodeStream(fis);
-                            fis.close();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            _id = cursor.getLong(cursor.getColumnIndexOrThrow(TracksContract._ID));
+                        } finally {
+                            cursor.close();
                         }
 
-                        draw(image);
+                        if (_id != null) {
+                            Uri trackUri = TracksContract.buildUri(_id);
 
-                        ContentValues values = new ContentValues();
-                        values.put(TracksContract.USED, true);
-                        getContentResolver().update(trackUri, values, null, null);
+                            Bitmap image = null;
+                            InputStream fis = null;
+                            try {
+                                fis = getContentResolver().openInputStream(TracksContract.buildWaveformUri(trackUri));
+                                image = BitmapFactory.decodeStream(fis);
+                                fis.close();
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            draw(image);
+
+                            ContentValues values = new ContentValues();
+                            values.put(TracksContract.USED, true);
+                            getContentResolver().update(trackUri, values, null, null);
+                        }
+                    } else {
+                        SoundcloudService.fetchFavorites(getApplicationContext());
                     }
-                } else {
-                    SoundcloudService.fetchFavorites(getApplicationContext());
-                }
 
-                mHandler.postDelayed(new NextImage(), TimeUnit.SECONDS.toMillis(10));
+                    mHandler.postDelayed(new NextImage(), mDuration);
+                }
             }
         }
 
@@ -89,16 +102,14 @@ public class SoundscreenWallpaperService extends WallpaperService {
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
 
-            SoundcloudService.schedule(getApplicationContext());
-
-            mHandler.post(new NextImage());
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            int duration = prefs.getInt(getString(R.string.pref_duration), getResources().getInteger(R.integer.duration_entry_15sec));
+            mDuration = TimeUnit.SECONDS.toMillis(duration);
         }
 
         @Override
         public void onDestroy() {
             super.onDestroy();
-
-            SoundcloudService.cancel(getApplicationContext());
         }
 
         @Override
@@ -118,10 +129,9 @@ public class SoundscreenWallpaperService extends WallpaperService {
 
         @Override
         public void onVisibilityChanged(boolean visible) {
+            super.onVisibilityChanged(visible);
             if (visible) {
-                // TODO: resume wallpaper updates
-            } else {
-                // TODO: pause wallpaper updates
+                mHandler.post(new NextImage());
             }
         }
 
@@ -129,6 +139,13 @@ public class SoundscreenWallpaperService extends WallpaperService {
         public void onTouchEvent(MotionEvent event) {
             super.onTouchEvent(event);
         }
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
     }
 
     @Override

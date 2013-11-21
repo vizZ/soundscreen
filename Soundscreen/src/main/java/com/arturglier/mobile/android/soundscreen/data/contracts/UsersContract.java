@@ -2,7 +2,7 @@ package com.arturglier.mobile.android.soundscreen.data.contracts;
 
 import android.net.Uri;
 
-public class UsersContract implements DataContract, UsersColumns {
+public class UsersContract extends CommonContract implements UsersColumns {
     public static final String MODEL_NAME = "user";
     public static final String TABLE_NAME = "users";
 

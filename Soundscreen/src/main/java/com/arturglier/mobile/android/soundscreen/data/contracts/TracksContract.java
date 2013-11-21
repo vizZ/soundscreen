@@ -5,7 +5,7 @@ import android.net.Uri;
 import com.arturglier.mobile.android.soundscreen.data.matchers.TracksMatcher;
 import com.arturglier.mobile.android.soundscreen.data.utils.sql.SQLBuilder;
 
-public class TracksContract implements DataContract, TracksColumns {
+public class TracksContract extends CommonContract implements TracksColumns {
     public static final String MODEL_NAME = "track";
     public static final String TABLE_NAME = "tracks";
 
@@ -31,10 +31,10 @@ public class TracksContract implements DataContract, TracksColumns {
     }
 
     public static Uri cached() {
-        return CONTENT_URI.buildUpon().appendQueryParameter(TracksContract.CACHED, SQLBuilder.TRUE).build();
+        return CONTENT_URI.buildUpon().appendQueryParameter(CACHED, SQLBuilder.TRUE).build();
     }
 
     public static Uri scheduled() {
-        return TracksContract.cached().buildUpon().appendQueryParameter(TracksContract.USED, SQLBuilder.FALSE).build();
+        return TracksContract.cached().buildUpon().appendQueryParameter(USED, SQLBuilder.FALSE).build();
     }
 }

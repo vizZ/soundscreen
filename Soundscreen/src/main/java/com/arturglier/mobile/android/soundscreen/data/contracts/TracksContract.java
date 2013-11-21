@@ -22,14 +22,6 @@ public class TracksContract implements DataContract, TracksColumns {
         }
     }
 
-    public static Uri buildWaveformUri(Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException();
-        } else {
-            return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).appendPath(TracksMatcher.PATH_WAVEFORMS).build();
-        }
-    }
-
     public static Uri buildWaveformUri(Uri uri) {
         if (uri == null) {
             throw new IllegalArgumentException();

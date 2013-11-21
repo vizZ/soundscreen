@@ -29,7 +29,7 @@ public class DataContentProvider extends ContentProvider {
 
     private DataSQLiteOpenHelper mDatabase;
 
-    private static final UriMatcher sUriMatcher = new DataUriMatcher();
+    private static final UriMatcher sUriMatcher = new DataUriMatcher(AUTHORITY);
 
     private static final HashMap<String, String> MIME_TYPES = new HashMap<String, String>();
 

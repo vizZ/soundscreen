@@ -5,8 +5,8 @@ import com.arturglier.mobile.android.soundscreen.data.enums.Table;
 
 public class DataUriMatcher extends CommonUriMatcher {
 
-    public DataUriMatcher() {
-        super(DataContentProvider.AUTHORITY);
+    public DataUriMatcher(String authority) {
+        super(authority);
 
         for (Table table : Table.values()) {
             table.matcher.addURIsTo(this);

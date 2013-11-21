@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.arturglier.mobile.android.soundscreen.data.contracts.CommonColumns;
+import com.arturglier.mobile.android.soundscreen.data.utils.sql.CursorHelper;
 import com.google.gson.annotations.SerializedName;
 
 public abstract class Common {
@@ -19,7 +20,12 @@ public abstract class Common {
     private String permaLink;
 
     public Common(Cursor cursor) {
+        CursorHelper helper = new CursorHelper(cursor);
 
+        setLocalId(helper.getLong(CommonColumns._ID));
+        setServerId(helper.getLong(CommonColumns.ID));
+        setPermaLink(helper.getString(CommonColumns.PERMA_LINK));
+        setUri(helper.getString(CommonColumns.URI));
     }
 
     public Long getLocalId() {

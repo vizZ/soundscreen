@@ -1,6 +1,7 @@
 package com.arturglier.mobile.android.soundscreen;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,6 +13,8 @@ import android.net.Uri;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.service.wallpaper.WallpaperService;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -33,6 +36,22 @@ public class SoundscreenWallpaperService extends WallpaperService {
 
         private Track mCurrentTrack;
         private Bitmap mCurrentImage;
+
+        private GestureDetectorCompat mGestureDetector;
+
+        private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                if (mCurrentTrack != null) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mCurrentTrack.getPermaLink()));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+
+                return true;
+            }
+        }
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -110,6 +129,8 @@ public class SoundscreenWallpaperService extends WallpaperService {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             int duration = prefs.getInt(getString(R.string.pref_duration), getResources().getInteger(R.integer.duration_entry_15sec));
             mDuration = TimeUnit.SECONDS.toMillis(duration);
+
+            mGestureDetector = new GestureDetectorCompat(getApplicationContext(), new MyGestureListener());
         }
 
         @Override
@@ -142,6 +163,7 @@ public class SoundscreenWallpaperService extends WallpaperService {
 
         @Override
         public void onTouchEvent(MotionEvent event) {
+            mGestureDetector.onTouchEvent(event);
             super.onTouchEvent(event);
         }
     }

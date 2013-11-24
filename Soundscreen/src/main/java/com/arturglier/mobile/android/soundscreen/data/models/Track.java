@@ -51,6 +51,7 @@ public class Track extends Common {
 
         setTitle(helper.getString(TracksContract.TITLE));
         setDuration(helper.getLong(TracksContract.DURATION));
+        setGenre(helper.getString(TracksContract.GENRE));
         setDescription(helper.getString(TracksContract.DESCRIPTION));
         setWaveformUrl(helper.getString(TracksContract.WAVEFORM_URL));
         setPlaybackCount(helper.getInt(TracksContract.PLAYBACK_COUNT));

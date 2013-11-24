@@ -62,7 +62,6 @@ public abstract class Common {
 
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
-        values.put(CommonColumns._ID, getLocalId());
         values.put(CommonColumns.ID, getServerId());
         values.put(CommonColumns.URI, getUri());
         values.put(CommonColumns.PERMA_LINK, getPermaLink());

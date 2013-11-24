@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
+import com.arturglier.mobile.android.soundscreen.data.models.Track;
 import com.arturglier.mobile.android.soundscreen.net.SoundcloudService;
 
 import java.io.FileNotFoundException;
@@ -30,6 +31,9 @@ public class SoundscreenWallpaperService extends WallpaperService {
         private Handler mHandler = new Handler();
         private long mDuration = TimeUnit.SECONDS.toMillis(15);
 
+        private Track mCurrentTrack;
+        private Bitmap mCurrentImage;
+
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(getString(R.string.pref_duration))) {
@@ -43,17 +47,12 @@ public class SoundscreenWallpaperService extends WallpaperService {
             @Override
             public void run() {
                 if (isVisible()) {
-                    Cursor cursor = getContentResolver().query(TracksContract.scheduled(), null, null, null, "RANDOM() LIMIT 1");
-                    if (cursor.moveToFirst()) {
-                        Long _id = null;
-                        try {
-                            _id = cursor.getLong(cursor.getColumnIndexOrThrow(TracksContract._ID));
-                        } finally {
-                            cursor.close();
-                        }
-
-                        if (_id != null) {
-                            Uri trackUri = TracksContract.buildUri(_id);
+                    Cursor cursor = null;
+                    try {
+                        cursor = getContentResolver().query(TracksContract.scheduled(), null, null, null, "RANDOM() LIMIT 1");
+                        if (cursor.moveToFirst()) {
+                            Track track = new Track(cursor);
+                            Uri trackUri = TracksContract.buildUri(track.getLocalId());
 
                             Bitmap image = null;
                             InputStream fis = null;
@@ -67,22 +66,26 @@ public class SoundscreenWallpaperService extends WallpaperService {
                                 e.printStackTrace();
                             }
 
-                            draw(image);
+                            if (draw(image)) mCurrentImage = image;
 
                             ContentValues values = new ContentValues();
                             values.put(TracksContract.USED, true);
                             getContentResolver().update(trackUri, values, null, null);
-                        }
-                    } else {
-                        SoundcloudService.fetchFavorites(getApplicationContext());
-                    }
 
-                    mHandler.postDelayed(new NextImage(), mDuration);
+                            mCurrentTrack = track;
+                        } else {
+                            SoundcloudService.fetchFavorites(getApplicationContext());
+                        }
+
+                        mHandler.postDelayed(new NextImage(), mDuration);
+                    } finally {
+                        if (cursor != null) cursor.close();
+                    }
                 }
             }
         }
 
-        private void draw(Bitmap image) {
+        private boolean draw(Bitmap image) {
             Canvas canvas = null;
             try {
                 canvas = getSurfaceHolder().lockCanvas();
@@ -90,12 +93,14 @@ public class SoundscreenWallpaperService extends WallpaperService {
                     Rect dst = new Rect(0, 0, this.getDesiredMinimumWidth(), this.getDesiredMinimumHeight());
                     Rect src = new Rect(0, 0, image.getWidth(), image.getHeight());
                     canvas.drawBitmap(image, src, dst, new Paint());
+                    return true;
                 }
             } finally {
                 if (canvas != null) {
                     getSurfaceHolder().unlockCanvasAndPost(canvas);
                 }
             }
+            return false;
         }
 
         @Override

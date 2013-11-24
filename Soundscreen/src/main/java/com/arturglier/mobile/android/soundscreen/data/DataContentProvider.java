@@ -65,6 +65,11 @@ public class DataContentProvider extends ContentProvider {
                 }
                 builder.table(TracksContract.TABLE_NAME);
                 return builder.query(db, projection, sortOrder);
+            case UsersMatcher.USERS_ID:
+                builder.where(UsersContract._ID + "=?", uri.getLastPathSegment());
+            case UsersMatcher.USERS:
+                builder.table(UsersContract.TABLE_NAME);
+                return builder.query(db, projection, sortOrder);
             default:
                 throw new UnsupportedOperationException("Unsupported URI: " + uri);
         }

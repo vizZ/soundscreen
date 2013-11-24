@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
+import com.arturglier.mobile.android.soundscreen.data.utils.sql.CursorHelper;
 import com.google.gson.annotations.SerializedName;
 
 public class User extends Common {
@@ -15,6 +16,11 @@ public class User extends Common {
 
     public User(Cursor cursor) {
         super(cursor);
+
+        CursorHelper helper = new CursorHelper(cursor);
+
+        setUsername(helper.getString(UsersContract.USERNAME));
+        setAvatarUrl(helper.getString(UsersContract.AVATAR_URL));
     }
 
     public String getUsername() {

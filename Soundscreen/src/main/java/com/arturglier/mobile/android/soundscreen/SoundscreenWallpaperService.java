@@ -158,6 +158,8 @@ public class SoundscreenWallpaperService extends WallpaperService {
             super.onVisibilityChanged(visible);
             if (visible) {
                 mHandler.post(new NextImage());
+            } else {
+                mHandler.removeCallbacksAndMessages(null);
             }
         }
 

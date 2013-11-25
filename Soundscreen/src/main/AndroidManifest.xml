@@ -52,7 +52,14 @@
         <provider
             android:authorities="com.arturglier.mobile.android.soundscreen.data.DataContentProvider"
             android:name=".data.DataContentProvider"/>
+
         <receiver android:name=".net.receivers.ScheduledUpdateReceiver"/>
+
+        <receiver android:name=".net.receivers.ConnectivityChangeReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

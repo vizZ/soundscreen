@@ -9,9 +9,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -40,7 +42,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-public class SoundcloudService extends IntentService {
+public class SoundcloudService extends IntentService implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String KEY_REQUEST_TYPE = "request_type";
 
     public static final int VAL_REQUEST_TYPE_NONE = 0;
@@ -93,6 +95,13 @@ public class SoundcloudService extends IntentService {
         alarmManager.cancel(pendingIntent);
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals(getString(R.string.pref_download))) {
+            SoundcloudService.fetchFavorites(this);
+        }
+    }
+
     private static class NotificationsHelper {
 
         private static final int ID_NOTIFICATION_DATA = 0;
@@ -143,6 +152,9 @@ public class SoundcloudService extends IntentService {
         super.onCreate();
 
         mNotificationsHelper = new NotificationsHelper(this);
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -162,6 +174,14 @@ public class SoundcloudService extends IntentService {
         } else {
             reuseAvailableWaveforms();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private void reuseAvailableWaveforms() {

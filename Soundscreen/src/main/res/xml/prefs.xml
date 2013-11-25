@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
-        android:key="pref_duration"
-        android:title="@string/pref_duration"
-        android:dialogTitle="@string/pref_duration"
-        android:entries="@array/pref_duration_entries"
-        android:entryValues="@array/pref_duration_values"
-        android:defaultValue="@string/pref_duration_entry_15sec"/>
+    <PreferenceCategory
+        android:title="@string/pref_category_general">
+        <ListPreference
+            android:key="pref_duration"
+            android:title="@string/pref_duration"
+            android:dialogTitle="@string/pref_duration"
+            android:entries="@array/pref_duration_entries"
+            android:entryValues="@array/pref_duration_values"
+            android:defaultValue="@string/pref_duration_entry_15sec"/>
+        <ListPreference
+            android:key="pref_download"
+            android:title="@string/pref_download"
+            android:dialogTitle="@string/pref_download"
+            android:entries="@array/pref_download_entries"
+            android:entryValues="@array/pref_download_values"
+            android:defaultValue="@string/pref_download_entry_mobile_and_wifi"/>
+    </PreferenceCategory>
 </PreferenceScreen>

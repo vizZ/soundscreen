@@ -20,4 +20,18 @@
     <string name="duration_entry_1min">1</string>
     <string name="duration_entry_5min">5</string>
 
+    <string name="pref_download">Auto-update wallpapers</string>
+
+    <string name="pref_download_entry_do_not_update">Do not update</string>
+    <string name="pref_download_entry_mobile_and_wifi">Wi-Fi or mobile network</string>
+    <string name="pref_download_entry_wifi_only">Wi-Fi only</string>
+
+    <string name="download_entry_do_not_update">0</string>
+    <string name="download_entry_mobile_and_wifi">1</string>
+    <string name="download_entry_wifi_only">2</string>
+
+    <string name="pref_download_summary">Auto-update wallpapers over [%1$s]</string>
+    <string name="pref_category_general">General</string>
+    <string name="pref_category_about">About</string>
+    
 </resources>

@@ -6,7 +6,7 @@ import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
 import com.arturglier.mobile.android.soundscreen.data.helpers.DataHelper;
 import com.arturglier.mobile.android.soundscreen.data.helpers.TracksHelper;
 import com.arturglier.mobile.android.soundscreen.data.helpers.UsersHelper;
-import com.arturglier.mobile.android.soundscreen.data.matchers.DataMatcher;
+import com.arturglier.mobile.android.soundscreen.data.matchers.CommonMatcher;
 import com.arturglier.mobile.android.soundscreen.data.matchers.TracksMatcher;
 import com.arturglier.mobile.android.soundscreen.data.matchers.UsersMatcher;
 
@@ -15,10 +15,10 @@ public enum Table {
     TRACKS(TracksContract.class, TracksMatcher.class, TracksHelper.class);
 
     public final CommonContract contract;
-    public final DataMatcher matcher;
+    public final CommonMatcher matcher;
     public final DataHelper helper;
 
-    Table(Class<? extends CommonContract> contractClass, Class<? extends DataMatcher> matcherClass, Class<? extends DataHelper> helperClass) throws ExceptionInInitializerError {
+    Table(Class<? extends CommonContract> contractClass, Class<? extends CommonMatcher> matcherClass, Class<? extends DataHelper> helperClass) throws ExceptionInInitializerError {
         try {
             this.contract = contractClass.newInstance();
             this.matcher = matcherClass.newInstance();

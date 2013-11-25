@@ -2,7 +2,7 @@ package com.arturglier.mobile.android.soundscreen.data.matchers;
 
 import com.arturglier.mobile.android.soundscreen.common.utils.CommonUriMatcher;
 
-public interface DataMatcher {
+public interface CommonMatcher {
     public static final String NUMBER = "#";
     public static final String WILDCARD = "*";
     public static final String SEPARATOR = "/";

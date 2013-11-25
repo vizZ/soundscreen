@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import com.arturglier.mobile.android.soundscreen.data.DataUriMatcher;
-import com.arturglier.mobile.android.soundscreen.data.matchers.DataMatcher;
+import com.arturglier.mobile.android.soundscreen.data.matchers.CommonMatcher;
 
 import junit.framework.TestCase;
 
@@ -17,14 +17,14 @@ public class TestDataUriMatcher extends TestCase {
     public void testContentUris() {
         check("content://auth/foo", UriMatcher.NO_MATCH);
 
-        check("content://auth/tracks", DataMatcher.TRACKS);
+        check("content://auth/tracks", CommonMatcher.TRACKS);
         check("content://auth/tracks/foo", UriMatcher.NO_MATCH);
-        check("content://auth/tracks/waveforms", DataMatcher.TRACKS_WAVEFORMS);
-        check("content://auth/tracks/1", DataMatcher.TRACKS_ID);
+        check("content://auth/tracks/waveforms", CommonMatcher.TRACKS_WAVEFORMS);
+        check("content://auth/tracks/1", CommonMatcher.TRACKS_ID);
 
-        check("content://auth/users", DataMatcher.USERS);
+        check("content://auth/users", CommonMatcher.USERS);
         check("content://auth/users/foo", UriMatcher.NO_MATCH);
-        check("content://auth/users/2", DataMatcher.USERS_ID);
+        check("content://auth/users/2", CommonMatcher.USERS_ID);
     }
 
     private void check(String uri, int expected) {

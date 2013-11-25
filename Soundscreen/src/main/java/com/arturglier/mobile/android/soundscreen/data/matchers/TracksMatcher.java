@@ -3,7 +3,7 @@ package com.arturglier.mobile.android.soundscreen.data.matchers;
 import com.arturglier.mobile.android.soundscreen.common.utils.CommonUriMatcher;
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 
-public class TracksMatcher implements DataMatcher {
+public class TracksMatcher implements CommonMatcher {
     public static final String PATH_TRACKS = TracksContract.TABLE_NAME;
     public static final String PATH_WAVEFORMS = "waveforms";
 

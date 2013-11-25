@@ -3,7 +3,7 @@ package com.arturglier.mobile.android.soundscreen.data.matchers;
 import com.arturglier.mobile.android.soundscreen.common.utils.CommonUriMatcher;
 import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
 
-public class UsersMatcher implements DataMatcher {
+public class UsersMatcher implements CommonMatcher {
     private static final String PATH_USERS = UsersContract.TABLE_NAME;
 
     @Override

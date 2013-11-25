@@ -37,4 +37,8 @@ public class TracksContract extends CommonContract implements TracksColumns {
     public static Uri scheduled() {
         return TracksContract.cached().buildUpon().appendQueryParameter(USED, SQLBuilder.FALSE).build();
     }
+
+    public static Uri used() {
+        return TracksContract.cached().buildUpon().appendQueryParameter(USED, SQLBuilder.TRUE).build();
+    }
 }

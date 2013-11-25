@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.arturglier.mobile.android.soundscreen.BuildConfig;
 import com.arturglier.mobile.android.soundscreen.R;
+import com.arturglier.mobile.android.soundscreen.common.utils.PreferenceUtils;
 import com.arturglier.mobile.android.soundscreen.data.DataContentProvider;
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
@@ -146,17 +147,27 @@ public class SoundcloudService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        int requestType = intent.getIntExtra(KEY_REQUEST_TYPE, VAL_REQUEST_TYPE_NONE);
-        switch (requestType) {
-            case VAL_REQUEST_TYPE_FAVORITES:
-                handleFetchFavorites();
-                break;
-            case VAL_REQUEST_TYPE_WAVEFORMS:
-                handleFetchWaveforms();
-                break;
-            default:
-                break;
+        if (PreferenceUtils.downloadPossible(this)) {
+            int requestType = intent.getIntExtra(KEY_REQUEST_TYPE, VAL_REQUEST_TYPE_NONE);
+            switch (requestType) {
+                case VAL_REQUEST_TYPE_FAVORITES:
+                    handleFetchFavorites();
+                    break;
+                case VAL_REQUEST_TYPE_WAVEFORMS:
+                    handleFetchWaveforms();
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            reuseAvailableWaveforms();
         }
+    }
+
+    private void reuseAvailableWaveforms() {
+        ContentValues values = new ContentValues();
+        values.put(TracksContract.USED, SQLBuilder.FALSE);
+        getContentResolver().update(TracksContract.used(), values, null, null);
     }
 
     private void handleFetchWaveforms() {

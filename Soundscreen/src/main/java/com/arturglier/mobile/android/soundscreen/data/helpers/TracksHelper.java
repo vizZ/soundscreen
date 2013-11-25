@@ -18,6 +18,7 @@ public class TracksHelper implements DataHelper {
             .column(TracksContract.DURATION).asInteger()
             .column(TracksContract.GENRE).asText()
             .column(TracksContract.DESCRIPTION).asText()
+            .column(TracksContract.ARTWORK_URL).asText()
             .column(TracksContract.WAVEFORM_URL).asText()
             .column(TracksContract.PLAYBACK_COUNT).asInteger()
             .column(TracksContract.DOWNLOAD_COUNT).asInteger()
@@ -42,7 +43,10 @@ public class TracksHelper implements DataHelper {
         if (oldVersion == 2) {
             db.execSQL("ALTER TABLE " + TracksContract.TABLE_NAME + " ADD COLUMN " + TracksContract.CACHED + " BOOLEAN NOT NULL DEFAULT FALSE");
             db.execSQL("ALTER TABLE " + TracksContract.TABLE_NAME + " ADD COLUMN " + TracksContract.USED + " BOOLEAN NOT NULL DEFAULT FALSE");
-            db.execSQL(CREATE_TABLE_TRACKS);
+        }
+
+        if (oldVersion == 3) {
+            db.execSQL("ALTER TABLE " + TracksContract.TABLE_NAME + " ADD COLUMN " + TracksContract.ARTWORK_URL + " TEXT");
         }
     }
 }

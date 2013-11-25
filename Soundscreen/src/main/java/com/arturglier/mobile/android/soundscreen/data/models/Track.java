@@ -20,6 +20,9 @@ public class Track extends Common {
     @SerializedName(TracksContract.DESCRIPTION)
     private String description;
 
+    @SerializedName(TracksContract.ARTWORK_URL)
+    private String artworkUrl;
+
     @SerializedName(TracksContract.WAVEFORM_URL)
     private String waveformUrl;
 
@@ -53,6 +56,7 @@ public class Track extends Common {
         setDuration(helper.getLong(TracksContract.DURATION));
         setGenre(helper.getString(TracksContract.GENRE));
         setDescription(helper.getString(TracksContract.DESCRIPTION));
+        setArtworkUrl(helper.getString(TracksContract.ARTWORK_URL));
         setWaveformUrl(helper.getString(TracksContract.WAVEFORM_URL));
         setPlaybackCount(helper.getInt(TracksContract.PLAYBACK_COUNT));
         setDownloadCount(helper.getInt(TracksContract.DOWNLOAD_COUNT));
@@ -91,6 +95,14 @@ public class Track extends Common {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getArtworkUrl() {
+        return artworkUrl;
+    }
+
+    public void setArtworkUrl(String artworkUrl) {
+        this.artworkUrl = artworkUrl;
     }
 
     public String getWaveformUrl() {
@@ -157,6 +169,7 @@ public class Track extends Common {
         values.put(TracksContract.GENRE, getGenre());
         values.put(TracksContract.DESCRIPTION, getDescription());
         values.put(TracksContract.USER_ID, getUserId());
+        values.put(TracksContract.ARTWORK_URL, getArtworkUrl());
         values.put(TracksContract.WAVEFORM_URL, getWaveformUrl());
         values.put(TracksContract.PLAYBACK_COUNT, getPlaybackCount());
         values.put(TracksContract.DOWNLOAD_COUNT, getDownloadCount());

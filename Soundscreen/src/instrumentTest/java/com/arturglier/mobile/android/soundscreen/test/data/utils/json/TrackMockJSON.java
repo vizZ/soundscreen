@@ -19,6 +19,7 @@ public class TrackMockJSON extends JSONObject {
         put(TracksContract.GENRE, TrackMockCursor.GENRE);
         put(TracksContract.DESCRIPTION, TrackMockCursor.DESCRIPTION);
         put(TracksContract.USER_ID, TrackMockCursor.USER_ID);
+        put(TracksContract.ARTWORK_URL, TrackMockCursor.ARTWORK_URL);
         put(TracksContract.WAVEFORM_URL, TrackMockCursor.WAVEFORM_URL);
         put(TracksContract.PLAYBACK_COUNT, TrackMockCursor.PLAYBACK_COUNT);
         put(TracksContract.DOWNLOAD_COUNT, TrackMockCursor.DOWNLOAD_COUNT);

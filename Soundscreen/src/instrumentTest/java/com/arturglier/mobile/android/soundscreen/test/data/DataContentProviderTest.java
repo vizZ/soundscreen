@@ -67,6 +67,7 @@ public class DataContentProviderTest extends ProviderTestCase2<DataContentProvid
         assertThat(track1.getGenre()).isEqualTo(track2.getGenre());
         assertThat(track1.getDescription()).isEqualTo(track2.getDescription());
         assertThat(track1.getUserId()).isEqualTo(track2.getUserId());
+        assertThat(track1.getArtworkUrl()).isEqualTo(track2.getArtworkUrl());
         assertThat(track1.getWaveformUrl()).isEqualTo(track2.getWaveformUrl());
         assertThat(track1.getPlaybackCount()).isEqualTo(track2.getPlaybackCount());
         assertThat(track1.getDownloadCount()).isEqualTo(track2.getDownloadCount());

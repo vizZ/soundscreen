@@ -44,7 +44,10 @@ public class TrackTest extends TestCase {
         assertThat(track.getGenre()).isEqualTo(TrackMockCursor.GENRE);
         assertThat(track.getDescription()).isEqualTo(TrackMockCursor.DESCRIPTION);
         assertThat(track.getUserId()).isEqualTo(Integer.parseInt(TrackMockCursor.USER_ID));
+
+        assertThat(track.getArtworkUrl()).isEqualTo(TrackMockCursor.ARTWORK_URL);
         assertThat(track.getWaveformUrl()).isEqualTo(TrackMockCursor.WAVEFORM_URL);
+
         assertThat(track.getPlaybackCount()).isEqualTo(Integer.parseInt(TrackMockCursor.PLAYBACK_COUNT));
         assertThat(track.getDownloadCount()).isEqualTo(Integer.parseInt(TrackMockCursor.DOWNLOAD_COUNT));
         assertThat(track.getFavoritingsCount()).isEqualTo(Integer.parseInt(TrackMockCursor.FAVORITINGS_COUNT));
@@ -70,7 +73,10 @@ public class TrackTest extends TestCase {
         assertThat(values.containsKey(TracksContract.GENRE)).isTrue();
         assertThat(values.containsKey(TracksContract.DESCRIPTION)).isTrue();
         assertThat(values.containsKey(TracksContract.USER_ID)).isTrue();
+
+        assertThat(values.containsKey(TracksContract.ARTWORK_URL)).isTrue();
         assertThat(values.containsKey(TracksContract.WAVEFORM_URL)).isTrue();
+
         assertThat(values.containsKey(TracksContract.PLAYBACK_COUNT)).isTrue();
         assertThat(values.containsKey(TracksContract.DOWNLOAD_COUNT)).isTrue();
         assertThat(values.containsKey(TracksContract.FAVORITINGS_COUNT)).isTrue();
@@ -113,7 +119,10 @@ public class TrackTest extends TestCase {
         assertThat(track.getGenre()).isEqualTo(json.getString(TracksContract.GENRE));
         assertThat(track.getDescription()).isEqualTo(json.getString(TracksContract.DESCRIPTION));
         assertThat(track.getUserId()).isEqualTo(json.getInt(TracksContract.USER_ID));
+
+        assertThat(track.getArtworkUrl()).isEqualTo(json.getString(TracksContract.ARTWORK_URL));
         assertThat(track.getWaveformUrl()).isEqualTo(json.getString(TracksContract.WAVEFORM_URL));
+
         assertThat(track.getPlaybackCount()).isEqualTo(json.getInt(TracksContract.PLAYBACK_COUNT));
         assertThat(track.getDownloadCount()).isEqualTo(json.getInt(TracksContract.DOWNLOAD_COUNT));
         assertThat(track.getFavoritingsCount()).isEqualTo(json.getInt(TracksContract.FAVORITINGS_COUNT));

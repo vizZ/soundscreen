@@ -16,6 +16,7 @@ public class TrackMockCursor extends MatrixCursor {
     public static final String GENRE = "some-genre";
     public static final String DESCRIPTION = "some-description";
     public static final String USER_ID = "321321";
+    public static final String ARTWORK_URL = "https://i1.sndcdn.com/artworks-000061541807-oz3o70-large.jpg?8063923";
     public static final String WAVEFORM_URL = "https://w1.sndcdn.com/someSOMEsome_s.png";
     public static final String PLAYBACK_COUNT = "1";
     public static final String DOWNLOAD_COUNT = "1";
@@ -35,6 +36,7 @@ public class TrackMockCursor extends MatrixCursor {
             TracksContract.GENRE,
             TracksContract.DESCRIPTION,
             TracksContract.USER_ID,
+            TracksContract.ARTWORK_URL,
             TracksContract.WAVEFORM_URL,
             TracksContract.PLAYBACK_COUNT,
             TracksContract.DOWNLOAD_COUNT,
@@ -54,6 +56,7 @@ public class TrackMockCursor extends MatrixCursor {
             GENRE,
             DESCRIPTION,
             USER_ID,
+            ARTWORK_URL,
             WAVEFORM_URL,
             PLAYBACK_COUNT,
             DOWNLOAD_COUNT,

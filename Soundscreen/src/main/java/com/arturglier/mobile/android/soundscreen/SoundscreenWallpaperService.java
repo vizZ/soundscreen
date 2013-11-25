@@ -140,11 +140,17 @@ public class SoundscreenWallpaperService extends WallpaperService {
             mDuration = TimeUnit.SECONDS.toMillis(duration);
 
             mGestureDetector = new GestureDetectorCompat(getApplicationContext(), new MyGestureListener());
+
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                .registerOnSharedPreferenceChangeListener(this);
         }
 
         @Override
         public void onDestroy() {
             super.onDestroy();
+
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                .unregisterOnSharedPreferenceChangeListener(this);
         }
 
         @Override

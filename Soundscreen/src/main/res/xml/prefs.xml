@@ -17,4 +17,12 @@
             android:entryValues="@array/pref_download_values"
             android:defaultValue="@string/pref_download_entry_mobile_and_wifi"/>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_category_about">
+        <EditTextPreference
+            android:key="pref_build"
+            android:title="@string/pref_build"
+            android:summary="@string/pref_build_summary"/>
+
+    </PreferenceCategory>
 </PreferenceScreen>

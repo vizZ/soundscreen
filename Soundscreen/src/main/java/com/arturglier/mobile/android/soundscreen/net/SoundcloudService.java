@@ -2,6 +2,7 @@ package com.arturglier.mobile.android.soundscreen.net;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
@@ -11,9 +12,11 @@ import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.arturglier.mobile.android.soundscreen.BuildConfig;
+import com.arturglier.mobile.android.soundscreen.R;
 import com.arturglier.mobile.android.soundscreen.data.DataContentProvider;
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
@@ -48,6 +51,8 @@ public class SoundcloudService extends IntentService {
 
     // TODO: this is gonna be set by the preferences
     private static final long EXEC_INTERVAL = TimeUnit.MINUTES.toMillis(15);
+
+    private NotificationsHelper mNotificationsHelper;
 
     public static void fetchFavorites(Context context) {
         context.startService(getFavoritesIntent(context));
@@ -87,8 +92,56 @@ public class SoundcloudService extends IntentService {
         alarmManager.cancel(pendingIntent);
     }
 
+    private static class NotificationsHelper {
+
+        private static final int ID_NOTIFICATION_DATA = 0;
+        private static final int ID_NOTIFICATION_WAVEFORMS = 1;
+
+        private static final int MAX_WAVEFORMS = 10;
+
+        private final NotificationManager mManger;
+
+        private NotificationCompat.Builder mBuilder;
+
+        private int mProgress;
+
+        public NotificationsHelper(Context context) {
+            mManger = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mBuilder = new NotificationCompat.Builder(context);
+        }
+
+        public void waveformsStart() {
+            mProgress = 0;
+
+            mBuilder
+                .setContentTitle("Downloading waveforms")
+                .setContentText("Download in progress")
+                .setSmallIcon(R.drawable.ic_launcher);
+
+            mBuilder.setProgress(MAX_WAVEFORMS, mProgress, false);
+            mManger.notify(ID_NOTIFICATION_WAVEFORMS, mBuilder.build());
+        }
+
+        public void waveformsUpdate() {
+            mBuilder.setProgress(MAX_WAVEFORMS, ++mProgress, false);
+            mManger.notify(ID_NOTIFICATION_WAVEFORMS, mBuilder.build());
+        }
+
+        public void waveformsComplete() {
+            mBuilder.setContentText("Download complete").setProgress(0, 0, false);
+            mManger.notify(ID_NOTIFICATION_WAVEFORMS, mBuilder.build());
+        }
+    }
+
     public SoundcloudService() {
         super(SoundcloudService.class.getSimpleName());
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        mNotificationsHelper = new NotificationsHelper(this);
     }
 
     @Override
@@ -112,13 +165,17 @@ public class SoundcloudService extends IntentService {
         try {
             query = getContentResolver().query(TracksContract.CONTENT_URI, null, null, null, "RANDOM() LIMIT 10");
             if (query.moveToFirst()) {
+                mNotificationsHelper.waveformsStart();
                 do {
                     Long _id = query.getLong(query.getColumnIndexOrThrow(TracksContract._ID));
                     String url = query.getString(query.getColumnIndexOrThrow(TracksContract.WAVEFORM_URL));
 
                     Uri trackUri = TracksContract.buildUri(_id);
                     fetchAndStoreWaveform(trackUri, url);
+
+                    mNotificationsHelper.waveformsUpdate();
                 } while (query.moveToNext());
+                mNotificationsHelper.waveformsComplete();
             } else {
                 SoundcloudService.fetchFavorites(this);
             }

@@ -18,6 +18,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
+import com.arturglier.mobile.android.soundscreen.common.utils.IntentUtils;
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.models.Track;
 import com.arturglier.mobile.android.soundscreen.net.SoundcloudService;
@@ -44,14 +45,22 @@ public class SoundscreenWallpaperService extends WallpaperService {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 if (mCurrentTrack != null) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(mCurrentTrack.getPermaLink()));
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("soundcloud://tracks:" + mCurrentTrack.getServerId()));
+                    appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                    if (IntentUtils.isActivityAvailable(getApplicationContext(), appIntent)) {
+                        startActivity(appIntent);
+                    } else {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mCurrentTrack.getPermaLink()));
+                        browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(browserIntent);
+                    }
                 }
 
                 return true;
             }
         }
+
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

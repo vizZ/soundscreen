@@ -47,7 +47,7 @@
         </service>
 
         <service
-            android:name=".net.SoundcloudService"/>
+            android:name=".net.services.SyncService"/>
 
         <provider
             android:authorities="com.arturglier.mobile.android.soundscreen.data.DataContentProvider"

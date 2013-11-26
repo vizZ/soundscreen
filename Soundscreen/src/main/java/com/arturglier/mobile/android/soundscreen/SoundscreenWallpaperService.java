@@ -23,7 +23,6 @@ import android.view.SurfaceHolder;
 import com.arturglier.mobile.android.soundscreen.common.utils.IntentUtils;
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.models.Track;
-import com.arturglier.mobile.android.soundscreen.net.SoundcloudService;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -115,7 +114,7 @@ public class SoundscreenWallpaperService extends WallpaperService {
                             mCurrentTrack = track;
                             mHandler.postDelayed(new NextImage(), mDuration);
                         } else {
-                            SoundcloudService.fetchWaveforms(getApplicationContext(), mMessenger);
+                            // TODO: trigger service for files download
                         }
                     } finally {
                         if (cursor != null) cursor.close();

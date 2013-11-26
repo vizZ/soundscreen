@@ -102,7 +102,7 @@ public class SoundscreenWallpaperService extends WallpaperService {
 
                             mCurrentTrack = track;
                         } else {
-                            SoundcloudService.fetchFavorites(getApplicationContext());
+                            SoundcloudService.fetchWaveforms(getApplicationContext());
                         }
 
                         mHandler.postDelayed(new NextImage(), mDuration);

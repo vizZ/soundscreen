@@ -1,7 +1,10 @@
 package com.arturglier.mobile.android.soundscreen;
 
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -11,10 +14,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
-import android.os.Message;
-import android.os.Messenger;
 import android.preference.PreferenceManager;
 import android.service.wallpaper.WallpaperService;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -23,6 +25,8 @@ import android.view.SurfaceHolder;
 import com.arturglier.mobile.android.soundscreen.common.utils.IntentUtils;
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.models.Track;
+import com.arturglier.mobile.android.soundscreen.net.services.FileService;
+import com.arturglier.mobile.android.soundscreen.net.services.SyncService;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,16 +37,14 @@ public class SoundscreenWallpaperService extends WallpaperService {
 
     private class SoundscreenEngine extends Engine implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-        private Handler mHandler = new Handler();
-
-        private class SyncHandler extends Handler {
+        private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
             @Override
-            public void handleMessage(Message msg) {
+            public void onReceive(Context context, Intent intent) {
                 mHandler.post(new NextImage());
             }
-        }
+        };
 
-        final Messenger mMessenger = new Messenger(new SyncHandler());
+        private Handler mHandler = new Handler();
 
         private long mDuration = TimeUnit.SECONDS.toMillis(15);
 
@@ -153,6 +155,11 @@ public class SoundscreenWallpaperService extends WallpaperService {
 
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                 .registerOnSharedPreferenceChangeListener(this);
+
+            LocalBroadcastManager.getInstance(getApplicationContext())
+                .registerReceiver(mMessageReceiver, new IntentFilter(FileService.ACTION_FILE_AVAILABLE));
+
+            SyncService.start(getApplicationContext());
         }
 
         @Override
@@ -161,6 +168,11 @@ public class SoundscreenWallpaperService extends WallpaperService {
 
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                 .unregisterOnSharedPreferenceChangeListener(this);
+
+            LocalBroadcastManager.getInstance(getApplicationContext())
+                .unregisterReceiver(mMessageReceiver);
+
+            SyncService.stop(getApplicationContext());
         }
 
         @Override

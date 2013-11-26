@@ -1,6 +1,8 @@
 package com.arturglier.mobile.android.soundscreen.net.services;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,6 +22,7 @@ import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
 import com.arturglier.mobile.android.soundscreen.data.models.Track;
 import com.arturglier.mobile.android.soundscreen.data.models.User;
 import com.arturglier.mobile.android.soundscreen.data.utils.sql.SQLBuilder;
+import com.arturglier.mobile.android.soundscreen.net.receivers.ScheduledUpdateReceiver;
 import com.google.gson.Gson;
 import com.soundcloud.api.ApiWrapper;
 import com.soundcloud.api.Http;
@@ -33,11 +36,29 @@ import java.util.ArrayList;
 
 public class SyncService extends IntentService implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private static long EXEC_INTERVAL = 10 * 1000;
+
     private static final ApiWrapper sWrapper = new ApiWrapper(BuildConfig.CLIENT_ID, BuildConfig.CLIENT_SECRET, null, null);
     private static final Gson sGson = new Gson();
 
     public static void start(Context context) {
         context.startService(new Intent(context, SyncService.class));
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, ScheduledUpdateReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), EXEC_INTERVAL, pendingIntent);
+    }
+
+    public static void stop(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, ScheduledUpdateReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        alarmManager.cancel(pendingIntent);
     }
 
     @Override

@@ -41,4 +41,11 @@ public class TracksContract extends CommonContract implements TracksColumns {
     public static Uri used() {
         return TracksContract.cached().buildUpon().appendQueryParameter(USED, SQLBuilder.TRUE).build();
     }
+
+    public static Uri left() {
+        return CONTENT_URI.buildUpon()
+            .appendQueryParameter(USED, SQLBuilder.FALSE)
+            .appendQueryParameter(CACHED, SQLBuilder.FALSE)
+            .build();
+    }
 }

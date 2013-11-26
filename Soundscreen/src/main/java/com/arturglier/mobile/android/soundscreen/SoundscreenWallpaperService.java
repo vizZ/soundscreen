@@ -11,6 +11,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.preference.PreferenceManager;
 import android.service.wallpaper.WallpaperService;
 import android.support.v4.view.GestureDetectorCompat;
@@ -33,6 +35,16 @@ public class SoundscreenWallpaperService extends WallpaperService {
     private class SoundscreenEngine extends Engine implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         private Handler mHandler = new Handler();
+
+        private class SyncHandler extends Handler {
+            @Override
+            public void handleMessage(Message msg) {
+                mHandler.post(new NextImage());
+            }
+        }
+
+        final Messenger mMessenger = new Messenger(new SyncHandler());
+
         private long mDuration = TimeUnit.SECONDS.toMillis(15);
 
         private Track mCurrentTrack;
@@ -101,11 +113,10 @@ public class SoundscreenWallpaperService extends WallpaperService {
                             getContentResolver().update(trackUri, values, null, null);
 
                             mCurrentTrack = track;
+                            mHandler.postDelayed(new NextImage(), mDuration);
                         } else {
-                            SoundcloudService.fetchWaveforms(getApplicationContext());
+                            SoundcloudService.fetchWaveforms(getApplicationContext(), mMessenger);
                         }
-
-                        mHandler.postDelayed(new NextImage(), mDuration);
                     } finally {
                         if (cursor != null) cursor.close();
                     }

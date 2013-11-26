@@ -10,6 +10,8 @@ import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Message;
+import android.os.Messenger;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -64,6 +66,12 @@ public class SoundcloudService extends IntentService implements SharedPreference
         context.startService(getWaveformsIntent(context));
     }
 
+    public static void fetchWaveforms(Context context, Messenger messenger) {
+        Intent intent = getWaveformsIntent(context);
+        intent.putExtra("MESSENGER", messenger);
+        context.startService(intent);
+    }
+
     private static Intent getWaveformsIntent(Context context) {
         Intent intent = new Intent(context, SoundcloudService.class);
         intent.putExtra(KEY_REQUEST_TYPE, VAL_REQUEST_TYPE_WAVEFORMS);
@@ -72,7 +80,7 @@ public class SoundcloudService extends IntentService implements SharedPreference
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals(getString(R.string.pref_download))) {
+        if (key.equals(getString(R.string.pref_download))) {
             SoundcloudService.fetchFavorites(this);
         }
     }
@@ -141,7 +149,7 @@ public class SoundcloudService extends IntentService implements SharedPreference
                     handleFetchFavorites();
                     break;
                 case VAL_REQUEST_TYPE_WAVEFORMS:
-                    handleFetchWaveforms();
+                    handleFetchWaveforms(intent);
                     break;
                 default:
                     break;
@@ -165,7 +173,9 @@ public class SoundcloudService extends IntentService implements SharedPreference
         getContentResolver().update(TracksContract.used(), values, null, null);
     }
 
-    private void handleFetchWaveforms() {
+    private void handleFetchWaveforms(Intent intent) {
+        Messenger messenger = intent.getParcelableExtra("MESSENGER");
+
         getContentResolver().delete(TracksContract.buildWaveformUri(TracksContract.CONTENT_URI), null, null);
         Cursor query = null;
         try {
@@ -182,6 +192,16 @@ public class SoundcloudService extends IntentService implements SharedPreference
                     mNotificationsHelper.waveformsUpdate();
                 } while (query.moveToNext());
                 mNotificationsHelper.waveformsComplete();
+
+                if (messenger != null) {
+                    Message message = Message.obtain();
+                    message.arg1 = 0;
+                    try {
+                        messenger.send(message);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
             } else {
                 SoundcloudService.fetchFavorites(this);
             }

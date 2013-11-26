@@ -194,7 +194,7 @@ public class SoundcloudService extends IntentService implements SharedPreference
         getContentResolver().delete(TracksContract.buildWaveformUri(TracksContract.CONTENT_URI), null, null);
         Cursor query = null;
         try {
-            query = getContentResolver().query(TracksContract.CONTENT_URI, null, null, null, "RANDOM() LIMIT 10");
+            query = getContentResolver().query(TracksContract.left(), null, null, null, "RANDOM() LIMIT 10");
             if (query.moveToFirst()) {
                 mNotificationsHelper.waveformsStart();
                 do {

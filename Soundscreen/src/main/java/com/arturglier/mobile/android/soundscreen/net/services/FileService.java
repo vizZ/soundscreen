@@ -31,7 +31,7 @@ public class FileService extends IntentService {
     public static final String ACTION_FILE_AVAILABLE = "com.arturglier.mobile.android.soundscreen.net.services.ACTION_FILE_AVAILABLE";
 
     public static void start(Context context) {
-        context.startService(new Intent(context, SyncService.class));
+        context.startService(new Intent(context, FileService.class));
     }
 
     private static final ApiWrapper sWrapper = new ApiWrapper(BuildConfig.CLIENT_ID, BuildConfig.CLIENT_SECRET, null, null);

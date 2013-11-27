@@ -17,7 +17,6 @@ public class PreferenceUtils {
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 
-        int type = networkInfo.getType();
         boolean connected = networkInfo.isConnected();
 
         if (connected) {
@@ -27,6 +26,7 @@ public class PreferenceUtils {
                 case 1:
                     return true;
                 case 2:
+                    int type = networkInfo.getType();
                     if (type == ConnectivityManager.TYPE_MOBILE) {
                         return false;
                     } else {

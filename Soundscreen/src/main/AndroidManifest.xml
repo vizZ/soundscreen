@@ -29,6 +29,10 @@
         </activity>
 
         <activity
+            android:name="com.arturglier.mobile.android.soundscreen.ui.activities.MainActivity"
+            android:icon="@drawable/actionbar_logo"/>
+
+        <activity
             android:name=".SoundscreenPreferenceActivity"
             android:exported="true"/>
 

@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.ContentProviderOperation;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
@@ -21,7 +20,6 @@ import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.contracts.UsersContract;
 import com.arturglier.mobile.android.soundscreen.data.models.Track;
 import com.arturglier.mobile.android.soundscreen.data.models.User;
-import com.arturglier.mobile.android.soundscreen.data.utils.sql.SQLBuilder;
 import com.arturglier.mobile.android.soundscreen.net.receivers.ScheduledUpdateReceiver;
 import com.google.gson.Gson;
 import com.soundcloud.api.ApiWrapper;
@@ -137,14 +135,6 @@ public class SyncService extends IntentService implements SharedPreferences.OnSh
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            reuseAvailableWaveforms();
         }
-    }
-
-    private void reuseAvailableWaveforms() {
-        ContentValues values = new ContentValues();
-        values.put(TracksContract.USED, SQLBuilder.FALSE);
-        getContentResolver().update(TracksContract.used(), values, null, null);
     }
 }

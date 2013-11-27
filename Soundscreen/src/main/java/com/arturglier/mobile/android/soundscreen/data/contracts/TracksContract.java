@@ -1,5 +1,6 @@
 package com.arturglier.mobile.android.soundscreen.data.contracts;
 
+import android.content.ContentUris;
 import android.net.Uri;
 
 import com.arturglier.mobile.android.soundscreen.data.matchers.TracksMatcher;
@@ -19,6 +20,30 @@ public class TracksContract extends CommonContract implements TracksColumns {
             throw new IllegalArgumentException();
         } else {
             return CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
+        }
+    }
+
+    public static Uri buildArtworksUri(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException();
+        } else {
+            return ContentUris.withAppendedId(CONTENT_URI, id).buildUpon().appendPath(TracksMatcher.PATH_ARTWORKS).build();
+        }
+    }
+
+    public static Uri buildArtworksUri(Uri uri) {
+        if (uri == null) {
+            throw new IllegalArgumentException();
+        } else {
+            return uri.buildUpon().appendPath(TracksMatcher.PATH_ARTWORKS).build();
+        }
+    }
+
+    public static Uri buildWaveformUri(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException();
+        } else {
+            return ContentUris.withAppendedId(CONTENT_URI, id).buildUpon().appendPath(TracksMatcher.PATH_WAVEFORMS).build();
         }
     }
 

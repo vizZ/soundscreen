@@ -14,6 +14,8 @@ public interface CommonMatcher {
     public static final int TRACKS_ID = 201;
     public static final int TRACKS_WAVEFORMS = 202;
     public static final int TRACKS_ID_WAVEFORMS = 203;
+    public static final int TRACKS_ARTWORKS = 204;
+    public static final int TRACKS_ID_ARTWORKS = 205;
 
     public void addURIsTo(CommonUriMatcher matcher);
 }

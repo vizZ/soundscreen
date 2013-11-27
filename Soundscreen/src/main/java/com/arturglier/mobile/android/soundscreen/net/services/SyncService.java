@@ -34,13 +34,17 @@ import java.util.ArrayList;
 
 public class SyncService extends IntentService implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static long EXEC_INTERVAL = 10 * 1000;
+    private static long EXEC_INTERVAL = 60 * 60 * 1000;
 
     private static final ApiWrapper sWrapper = new ApiWrapper(BuildConfig.CLIENT_ID, BuildConfig.CLIENT_SECRET, null, null);
     private static final Gson sGson = new Gson();
 
     public static void start(Context context) {
         context.startService(new Intent(context, SyncService.class));
+    }
+
+    public static void startAndRepeat(Context context) {
+        SyncService.start(context);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 

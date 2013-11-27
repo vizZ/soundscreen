@@ -159,7 +159,7 @@ public class SoundscreenWallpaperService extends WallpaperService {
             LocalBroadcastManager.getInstance(getApplicationContext())
                 .registerReceiver(mMessageReceiver, new IntentFilter(FileService.ACTION_FILE_AVAILABLE));
 
-            SyncService.start(getApplicationContext());
+            SyncService.startAndRepeat(getApplicationContext());
         }
 
         @Override

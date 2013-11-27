@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -64,22 +65,31 @@ public class FileService extends IntentService {
             mBuilder
                 .setContentTitle("Downloading waveforms")
                 .setContentText("Download in progress")
-                .setSmallIcon(R.drawable.ic_launcher);
+                .setTicker("Downloading new waveforms")
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.ic_action_refresh)
+                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_launcher))
+                .setProgress(MAX_WAVEFORMS, mProgress, false)
+                .setContentIntent(PendingIntent.getActivity(mContext, 0, new Intent(), 0));
 
-            mBuilder.setProgress(MAX_WAVEFORMS, mProgress, false);
-            mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 0, new Intent(), 0));
             mManger.notify(ID_NOTIFICATION_WAVEFORMS, mBuilder.build());
         }
 
         public void waveformsUpdate() {
-            mBuilder.setProgress(MAX_WAVEFORMS, ++mProgress, false);
-            mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 0, new Intent(), 0));
+            mBuilder
+                .setProgress(MAX_WAVEFORMS, ++mProgress, false)
+                .setContentIntent(PendingIntent.getActivity(mContext, 0, new Intent(), 0));
+
             mManger.notify(ID_NOTIFICATION_WAVEFORMS, mBuilder.build());
         }
 
         public void waveformsComplete() {
-            mBuilder.setContentText("Download complete").setProgress(0, 0, false);
-            mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 0, new Intent(), 0));
+            mBuilder
+                .setContentText("Download complete").setProgress(0, 0, false)
+                .setContentIntent(PendingIntent.getActivity(mContext, 0, new Intent(), 0))
+                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_launcher))
+                .setSmallIcon(R.drawable.ic_launcher);
+
             mManger.notify(ID_NOTIFICATION_WAVEFORMS, mBuilder.build());
         }
     }

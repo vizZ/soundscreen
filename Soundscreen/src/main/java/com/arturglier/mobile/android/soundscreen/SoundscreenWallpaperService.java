@@ -40,6 +40,7 @@ public class SoundscreenWallpaperService extends WallpaperService {
         private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                mHandler.removeCallbacksAndMessages(null);
                 mHandler.post(new NextImage());
             }
         };

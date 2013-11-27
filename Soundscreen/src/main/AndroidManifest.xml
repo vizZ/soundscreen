@@ -48,6 +48,8 @@
 
         <service
             android:name=".net.services.SyncService"/>
+        <service
+            android:name=".net.services.FileService"/>
 
         <provider
             android:authorities="com.arturglier.mobile.android.soundscreen.data.DataContentProvider"

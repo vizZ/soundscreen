@@ -17,6 +17,7 @@ import com.arturglier.mobile.android.soundscreen.BuildConfig;
 import com.arturglier.mobile.android.soundscreen.R;
 import com.arturglier.mobile.android.soundscreen.common.utils.PreferenceUtils;
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
+import com.arturglier.mobile.android.soundscreen.data.models.Track;
 import com.arturglier.mobile.android.soundscreen.data.utils.sql.SQLBuilder;
 import com.soundcloud.api.ApiWrapper;
 
@@ -112,16 +113,20 @@ public class FileService extends IntentService {
             try {
                 query = getContentResolver().query(TracksContract.left(), null, null, null, "RANDOM() LIMIT 10");
                 if (query.moveToFirst()) {
+                    getContentResolver().delete(TracksContract.buildArtworksUri(TracksContract.CONTENT_URI), null, null);
                     getContentResolver().delete(TracksContract.buildWaveformUri(TracksContract.CONTENT_URI), null, null);
 
                     mNotificationsHelper.waveformsStart();
                     boolean first = true;
                     do {
-                        Long _id = query.getLong(query.getColumnIndexOrThrow(TracksContract._ID));
-                        String url = query.getString(query.getColumnIndexOrThrow(TracksContract.WAVEFORM_URL));
+                        Track track = new Track(query);
 
-                        Uri trackUri = TracksContract.buildUri(_id);
-                        fetchAndStoreWaveform(trackUri, url);
+                        fetchAndStoreFile(TracksContract.buildArtworksUri(track.getLocalId()), track.getArtworkUrl());
+                        fetchAndStoreFile(TracksContract.buildWaveformUri(track.getLocalId()), track.getWaveformUrl());
+
+                        ContentValues values = new ContentValues();
+                        values.put(TracksContract.CACHED, SQLBuilder.TRUE);
+                        getContentResolver().update(TracksContract.buildUri(track.getLocalId()), values, null, null);
 
                         mNotificationsHelper.waveformsUpdate();
 
@@ -166,7 +171,7 @@ public class FileService extends IntentService {
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
-    private void fetchAndStoreWaveform(Uri uri, String url) throws IOException {
+    private void fetchAndStoreFile(Uri uri, String url) throws IOException {
         HttpResponse response = sWrapper.getHttpClient().execute(new HttpGet(url));
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             byte[] fileData = EntityUtils.toByteArray(response.getEntity());
@@ -175,7 +180,7 @@ public class FileService extends IntentService {
             // Write data to file
             OutputStream fos = null;
             try {
-                fos = getContentResolver().openOutputStream(TracksContract.buildWaveformUri(uri));
+                fos = getContentResolver().openOutputStream(uri);
                 fos.write(fileData);
                 fos.flush();
             } catch (Exception e) {
@@ -186,10 +191,6 @@ public class FileService extends IntentService {
                     fos.close();
                 }
             }
-
-            ContentValues values = new ContentValues();
-            values.put(TracksContract.CACHED, SQLBuilder.TRUE);
-            getContentResolver().update(uri, values, null, null);
 
             Log.d("CACHED", "Cached: " + uri);
         }

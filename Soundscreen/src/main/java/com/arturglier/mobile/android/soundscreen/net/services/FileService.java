@@ -2,6 +2,7 @@ package com.arturglier.mobile.android.soundscreen.net.services;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -45,12 +46,14 @@ public class FileService extends IntentService {
 
         private static final int MAX_WAVEFORMS = 10;
 
+        private final Context mContext;
         private final NotificationManager mManger;
         private NotificationCompat.Builder mBuilder;
 
         private int mProgress;
 
         public NotificationsHelper(Context context) {
+            mContext = context;
             mManger = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mBuilder = new NotificationCompat.Builder(context);
         }
@@ -64,16 +67,19 @@ public class FileService extends IntentService {
                 .setSmallIcon(R.drawable.ic_launcher);
 
             mBuilder.setProgress(MAX_WAVEFORMS, mProgress, false);
+            mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 0, new Intent(), 0));
             mManger.notify(ID_NOTIFICATION_WAVEFORMS, mBuilder.build());
         }
 
         public void waveformsUpdate() {
             mBuilder.setProgress(MAX_WAVEFORMS, ++mProgress, false);
+            mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 0, new Intent(), 0));
             mManger.notify(ID_NOTIFICATION_WAVEFORMS, mBuilder.build());
         }
 
         public void waveformsComplete() {
             mBuilder.setContentText("Download complete").setProgress(0, 0, false);
+            mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 0, new Intent(), 0));
             mManger.notify(ID_NOTIFICATION_WAVEFORMS, mBuilder.build());
         }
     }

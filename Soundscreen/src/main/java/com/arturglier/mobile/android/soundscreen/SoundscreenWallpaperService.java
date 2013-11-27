@@ -116,7 +116,7 @@ public class SoundscreenWallpaperService extends WallpaperService {
                             mCurrentTrack = track;
                             mHandler.postDelayed(new NextImage(), mDuration);
                         } else {
-                            SyncService.start(getApplicationContext());
+                            FileService.start(getApplicationContext());
                         }
                     } finally {
                         if (cursor != null) cursor.close();

@@ -7,14 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.arturglier.mobile.android.soundscreen.BuildConfig;
 import com.arturglier.mobile.android.soundscreen.R;
+import com.arturglier.mobile.android.soundscreen.common.utils.PreferenceUtils;
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.utils.sql.SQLBuilder;
 import com.soundcloud.api.ApiWrapper;
@@ -28,6 +27,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class FileService extends IntentService {
+
+    public static final String ACTION_FILE_AVAILABLE = "com.arturglier.mobile.android.soundscreen.net.services.ACTION_FILE_AVAILABLE";
 
     public static void start(Context context) {
         context.startService(new Intent(context, SyncService.class));
@@ -90,44 +91,63 @@ public class FileService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Messenger messenger = intent.getParcelableExtra("MESSENGER");
+        if (PreferenceUtils.downloadPossible(this)) {
+            Cursor query = null;
+            try {
+                query = getContentResolver().query(TracksContract.left(), null, null, null, "RANDOM() LIMIT 10");
+                if (query.moveToFirst()) {
+                    getContentResolver().delete(TracksContract.buildWaveformUri(TracksContract.CONTENT_URI), null, null);
 
-        getContentResolver().delete(TracksContract.buildWaveformUri(TracksContract.CONTENT_URI), null, null);
-        Cursor query = null;
-        try {
-            query = getContentResolver().query(TracksContract.left(), null, null, null, "RANDOM() LIMIT 10");
-            if (query.moveToFirst()) {
-//                mNotificationsHelper.waveformsStart();
-                do {
-                    Long _id = query.getLong(query.getColumnIndexOrThrow(TracksContract._ID));
-                    String url = query.getString(query.getColumnIndexOrThrow(TracksContract.WAVEFORM_URL));
+                    mNotificationsHelper.waveformsStart();
+                    boolean first = true;
+                    do {
+                        Long _id = query.getLong(query.getColumnIndexOrThrow(TracksContract._ID));
+                        String url = query.getString(query.getColumnIndexOrThrow(TracksContract.WAVEFORM_URL));
 
-                    Uri trackUri = TracksContract.buildUri(_id);
-                    fetchAndStoreWaveform(trackUri, url);
+                        Uri trackUri = TracksContract.buildUri(_id);
+                        fetchAndStoreWaveform(trackUri, url);
 
-//                    mNotificationsHelper.waveformsUpdate();
-                } while (query.moveToNext());
-//                mNotificationsHelper.waveformsComplete();
+                        mNotificationsHelper.waveformsUpdate();
 
-                if (messenger != null) {
-                    Message message = Message.obtain();
-                    message.arg1 = 0;
-                    try {
-                        messenger.send(message);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+                        if (first) {
+                            notifyEngine();
+                            first = false;
+                        }
+                    } while (query.moveToNext());
+                    mNotificationsHelper.waveformsComplete();
+                } else {
+                    resetAll();
+                    notifyEngine();
                 }
-            } else {
-                SyncService.start(this);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (query != null) {
+                    query.close();
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (query != null) {
-                query.close();
-            }
+        } else {
+            resetScheduled();
+            notifyEngine();
         }
+    }
+
+    private void resetScheduled() {
+        ContentValues values = new ContentValues();
+        values.put(TracksContract.USED, SQLBuilder.FALSE);
+        getContentResolver().update(TracksContract.used(), values, null, null);
+    }
+
+    private void resetAll() {
+        ContentValues values = new ContentValues();
+        values.put(TracksContract.CACHED, SQLBuilder.FALSE);
+        values.put(TracksContract.USED, SQLBuilder.FALSE);
+        getContentResolver().update(TracksContract.CONTENT_URI, values, null, null);
+    }
+
+    private void notifyEngine() {
+        Intent intent = new Intent(ACTION_FILE_AVAILABLE);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     private void fetchAndStoreWaveform(Uri uri, String url) throws IOException {

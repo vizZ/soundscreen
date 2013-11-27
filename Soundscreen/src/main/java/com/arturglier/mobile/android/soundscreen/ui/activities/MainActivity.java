@@ -17,6 +17,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.arturglier.mobile.android.soundscreen.R;
 import com.arturglier.mobile.android.soundscreen.SoundscreenPreferenceActivity;
 import com.arturglier.mobile.android.soundscreen.SoundscreenWallpaperService;
+import com.arturglier.mobile.android.soundscreen.net.services.SyncService;
 import com.arturglier.mobile.android.soundscreen.ui.adapters.MainViewPagerAdapter;
 import com.arturglier.mobile.android.soundscreen.ui.fragments.AboutFragment;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -67,6 +68,9 @@ public class MainActivity extends SherlockFragmentActivity implements View.OnCli
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_resync:
+                SyncService.restart(this);
+                return true;
             case R.id.menu_settings:
                 startActivity(new Intent(this, SoundscreenPreferenceActivity.class));
                 return true;

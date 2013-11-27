@@ -43,24 +43,30 @@ public class SyncService extends IntentService implements SharedPreferences.OnSh
         context.startService(new Intent(context, SyncService.class));
     }
 
+    public static void restart(Context context) {
+        SyncService.stop(context);
+        SyncService.startAndRepeat(context);
+    }
+
     public static void startAndRepeat(Context context) {
         SyncService.start(context);
 
+        PendingIntent pendingIntent = SyncService.getPendingIntent(context);
+
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        Intent intent = new Intent(context, ScheduledUpdateReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), EXEC_INTERVAL, pendingIntent);
     }
 
     public static void stop(Context context) {
+        PendingIntent pendingIntent = getPendingIntent(context);
+
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        Intent intent = new Intent(context, ScheduledUpdateReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
         alarmManager.cancel(pendingIntent);
+    }
+
+    public static PendingIntent getPendingIntent(Context context) {
+        Intent intent = new Intent(context, ScheduledUpdateReceiver.class);
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     @Override

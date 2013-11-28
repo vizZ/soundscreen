@@ -23,6 +23,13 @@
             android:entries="@array/pref_sync_entries"
             android:entryValues="@array/pref_sync_values"
             android:defaultValue="@string/pref_sync_entry_1_hour"/>
+        <ListPreference
+            android:key="pref_cache"
+            android:title="@string/pref_cache"
+            android:dialogTitle="@string/pref_cache"
+            android:entries="@array/pref_cache_entries"
+            android:entryValues="@array/pref_cache_values"
+            android:defaultValue="@string/pref_cache_entry_10_tracks"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/pref_category_about">

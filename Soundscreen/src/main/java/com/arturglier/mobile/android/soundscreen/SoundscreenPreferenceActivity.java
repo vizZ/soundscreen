@@ -60,6 +60,20 @@ public class SoundscreenPreferenceActivity extends SherlockPreferenceActivity {
             }
         });
 
+        final ListPreference cache = (ListPreference) findPreference("pref_cache");
+        cache.setSummary(getString(R.string.pref_cache_summary, getString(R.string.pref_cache_entry_10_tracks)));
+        cache.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                // Set the value as the new value
+                cache.setValue(newValue.toString());
+                // Get the entry which corresponds to the current value and set as summary
+                preference.setSummary(getString(R.string.pref_cache_summary, cache.getEntry().toString()));
+                return false;
+            }
+        });
+
         final EditTextPreference build = (EditTextPreference) findPreference("pref_build");
         try {
             build.setSummary(

@@ -32,4 +32,14 @@
         <item>@string/sync_entry_2_hours</item>
         <item>@string/sync_entry_6_hours</item>
     </string-array>
+    <string-array name="pref_cache_entries">
+        <item>@string/pref_cache_entry_10_tracks</item>
+        <item>@string/pref_cache_entry_25_tracks</item>
+        <item>@string/pref_cache_entry_50_tracks</item>
+    </string-array>
+    <string-array name="pref_cache_values">
+        <item>@string/cache_entry_10_tracks</item>
+        <item>@string/cache_entry_25_tracks</item>
+        <item>@string/cache_entry_50_track</item>
+    </string-array>
 </resources>

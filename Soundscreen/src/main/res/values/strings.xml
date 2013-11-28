@@ -50,6 +50,19 @@
     <string name="sync_entry_1_hour">1</string>
     <string name="sync_entry_2_hours">2</string>
     <string name="sync_entry_6_hours">6</string>
+
     <string name="pref_sync_summary">Synchronize every [%1$s]</string>
+
+    <string name="pref_cache">Cache size</string>
+
+    <string name="pref_cache_entry_10_tracks">10 tracks</string>
+    <string name="pref_cache_entry_25_tracks">25 tracks</string>
+    <string name="pref_cache_entry_50_tracks">50 tracks</string>
+
+    <string name="cache_entry_10_tracks">10</string>
+    <string name="cache_entry_25_tracks">25</string>
+    <string name="cache_entry_50_track">50</string>
+
+    <string name="pref_cache_summary">Cache up to [%1$s]</string>
 
 </resources>

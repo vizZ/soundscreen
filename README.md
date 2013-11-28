@@ -1,4 +1,5 @@
-**Project requirements:**
+Project requirements
+---
 
 * **[Done]** Android 2.1+ compatible
 
@@ -41,3 +42,16 @@
 	
 
 * *[To be done]* Optional: display the name of the track on the home screen
+
+Things to improve
+---
+
+* Add some nice exponential backoff mechanism to SyncService
+* Enable wallpaper scrolling
+* Add some nice paralax effect to wallpaper (try using AndEngine)
+* Try reusing/enabling SoundCloud auth to fetch user's data
+* Introduce better cache management (Memory/Internal/External)
+* Add some nice transition effect when switching wallpapers
+* Think of adding some showcase for better discoverability (for example the double tap)
+* Enable adding aome picture from the Gallery as the background fillin 
+* Create some custom IntegerListPreference

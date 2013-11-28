@@ -10,6 +10,8 @@ import com.arturglier.mobile.android.soundscreen.R;
 
 public class PreferenceUtils {
 
+    private static final long HOUR = 60 * 60 * 1000;
+
     public static boolean downloadPossible(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         Integer downloadConf = Integer.valueOf(prefs.getString(context.getString(R.string.pref_download), context.getString(R.string.download_entry_mobile_and_wifi)));
@@ -38,5 +40,10 @@ public class PreferenceUtils {
         } else {
             return false;
         }
+    }
+
+    public static long getSyncInterval(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getLong(context.getString(R.string.pref_sync), HOUR);
     }
 }

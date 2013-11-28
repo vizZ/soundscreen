@@ -6,9 +6,11 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -29,9 +31,10 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class FileService extends IntentService {
+public class FileService extends IntentService implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static final String ACTION_FILE_AVAILABLE = "com.arturglier.mobile.android.soundscreen.net.services.ACTION_FILE_AVAILABLE";
+    private long mCacheSize = 10;
 
     public static void start(Context context) {
         context.startService(new Intent(context, FileService.class));
@@ -105,7 +108,25 @@ public class FileService extends IntentService {
     public void onCreate() {
         super.onCreate();
 
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .registerOnSharedPreferenceChangeListener(this);
+
         mNotificationsHelper = new NotificationsHelper(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+            .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_cache))) {
+            mCacheSize = sharedPreferences.getLong(key, 10);
+        }
     }
 
     @Override
@@ -113,7 +134,8 @@ public class FileService extends IntentService {
         if (PreferenceUtils.downloadPossible(this)) {
             Cursor query = null;
             try {
-                query = getContentResolver().query(TracksContract.left(), null, null, null, "RANDOM() LIMIT 10");
+                // TODO: handle case when having cached all items, but their number is less than cache size => no download needed anyway
+                query = getContentResolver().query(TracksContract.left(), null, null, null, "RANDOM() LIMIT " + mCacheSize);
                 if (query.moveToFirst()) {
                     getContentResolver().delete(TracksContract.buildArtworksUri(TracksContract.CONTENT_URI), null, null);
                     getContentResolver().delete(TracksContract.buildWaveformUri(TracksContract.CONTENT_URI), null, null);

@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -22,6 +21,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
+import com.arturglier.mobile.android.soundscreen.common.utils.BitmapUtils;
 import com.arturglier.mobile.android.soundscreen.common.utils.IntentUtils;
 import com.arturglier.mobile.android.soundscreen.data.contracts.TracksContract;
 import com.arturglier.mobile.android.soundscreen.data.models.Track;
@@ -50,9 +50,14 @@ public class SoundscreenWallpaperService extends WallpaperService {
         private long mDuration = TimeUnit.SECONDS.toMillis(15);
 
         private Track mCurrentTrack;
-        private Bitmap mCurrentImage;
+
+        private Bitmap mCurrentArtworks;
+        private Bitmap mCurrentWaveform;
 
         private GestureDetectorCompat mGestureDetector;
+
+        private int mWidth;
+        private int mHeight;
 
         private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 
@@ -94,13 +99,13 @@ public class SoundscreenWallpaperService extends WallpaperService {
                         cursor = getContentResolver().query(TracksContract.scheduled(), null, null, null, "RANDOM() LIMIT 1");
                         if (cursor.moveToFirst()) {
                             Track track = new Track(cursor);
-                            Uri trackUri = TracksContract.buildUri(track.getLocalId());
 
-                            Bitmap image = null;
                             InputStream fis = null;
+
+                            Bitmap artworks = null;
                             try {
-                                fis = getContentResolver().openInputStream(TracksContract.buildWaveformUri(trackUri));
-                                image = BitmapFactory.decodeStream(fis);
+                                fis = getContentResolver().openInputStream(TracksContract.buildArtworksUri(track.getLocalId()));
+                                artworks = BitmapFactory.decodeStream(fis);
                                 fis.close();
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
@@ -108,11 +113,33 @@ public class SoundscreenWallpaperService extends WallpaperService {
                                 e.printStackTrace();
                             }
 
-                            if (draw(image)) mCurrentImage = image;
+                            if (mCurrentArtworks != null) {
+                                mCurrentArtworks = artworks;
+                            }
 
-                            ContentValues values = new ContentValues();
-                            values.put(TracksContract.USED, true);
-                            getContentResolver().update(trackUri, values, null, null);
+                            Bitmap waveform = null;
+                            try {
+                                fis = getContentResolver().openInputStream(TracksContract.buildWaveformUri(track.getLocalId()));
+                                waveform = BitmapFactory.decodeStream(fis);
+                                fis.close();
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            if (waveform != null) {
+                                Bitmap resizedBitmap = BitmapUtils.resize(waveform, mWidth, mHeight);
+
+                                mCurrentWaveform = resizedBitmap;
+
+                                draw();
+
+                                ContentValues values = new ContentValues();
+                                values.put(TracksContract.USED, true);
+                                getContentResolver().update(TracksContract.buildUri(track.getLocalId()), values, null, null);
+
+                            }
 
                             mCurrentTrack = track;
                             mHandler.postDelayed(new NextImage(), mDuration);
@@ -126,14 +153,16 @@ public class SoundscreenWallpaperService extends WallpaperService {
             }
         }
 
-        private boolean draw(Bitmap image) {
+
+        private boolean draw() {
             Canvas canvas = null;
             try {
                 canvas = getSurfaceHolder().lockCanvas();
-                if (canvas != null & image != null) {
-                    Rect dst = new Rect(0, 0, this.getDesiredMinimumWidth(), this.getDesiredMinimumHeight());
-                    Rect src = new Rect(0, 0, image.getWidth(), image.getHeight());
-                    canvas.drawBitmap(image, src, dst, new Paint());
+                if (canvas != null) {
+                    if (mCurrentWaveform != null) {
+                        canvas.drawBitmap(mCurrentWaveform, 0, 0, new Paint());
+                    }
+
                     return true;
                 }
             } finally {
@@ -184,6 +213,9 @@ public class SoundscreenWallpaperService extends WallpaperService {
         @Override
         public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             super.onSurfaceChanged(holder, format, width, height);
+
+            mWidth = width;
+            mHeight = height;
         }
 
         @Override

@@ -153,6 +153,13 @@ public class SoundscreenWallpaperService extends WallpaperService {
             }
         }
 
+        private class DrawImage implements Runnable {
+
+            @Override
+            public void run() {
+                draw();
+            }
+        }
 
         private boolean draw() {
             Canvas canvas = null;

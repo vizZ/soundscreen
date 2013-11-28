@@ -56,7 +56,7 @@ public class SyncService extends IntentService implements SharedPreferences.OnSh
         PendingIntent pendingIntent = SyncService.getPendingIntent(context);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), EXEC_INTERVAL, pendingIntent);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), EXEC_INTERVAL, pendingIntent);
     }
 
     public static void stop(Context context) {

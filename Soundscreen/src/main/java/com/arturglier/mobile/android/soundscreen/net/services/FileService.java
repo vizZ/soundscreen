@@ -53,6 +53,7 @@ public class FileService extends IntentService {
         private NotificationCompat.Builder mBuilder;
 
         private int mProgress;
+        private int mCount;
 
         public NotificationsHelper(Context context) {
             mContext = context;
@@ -60,8 +61,9 @@ public class FileService extends IntentService {
             mBuilder = new NotificationCompat.Builder(context);
         }
 
-        public void waveformsStart() {
+        public void waveformsStart(int count) {
             mProgress = 0;
+            mCount = count;
 
             mBuilder
                 .setContentTitle("Downloading waveforms")
@@ -70,7 +72,7 @@ public class FileService extends IntentService {
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_action_refresh)
                 .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_launcher))
-                .setProgress(MAX_WAVEFORMS, mProgress, false)
+                .setProgress(mCount, mProgress, false)
                 .setContentIntent(PendingIntent.getActivity(mContext, 0, new Intent(), 0));
 
             mManger.notify(ID_NOTIFICATION_WAVEFORMS, mBuilder.build());
@@ -116,7 +118,7 @@ public class FileService extends IntentService {
                     getContentResolver().delete(TracksContract.buildArtworksUri(TracksContract.CONTENT_URI), null, null);
                     getContentResolver().delete(TracksContract.buildWaveformUri(TracksContract.CONTENT_URI), null, null);
 
-                    mNotificationsHelper.waveformsStart();
+                    mNotificationsHelper.waveformsStart(query.getCount());
                     boolean first = true;
                     do {
                         Track track = new Track(query);

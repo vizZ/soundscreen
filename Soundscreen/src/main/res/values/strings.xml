@@ -41,4 +41,15 @@
     <string name="about">Soundscreen is a LiveWallpaper with your favourite Soundcloud tunes!</string>
     <string name="menu_resync">Resync</string>
 
+    <string name="pref_sync">Sync</string>
+
+    <string name="pref_sync_entry_1_hour">1 hour</string>
+    <string name="pref_sync_entry_2_hour">2 hours</string>
+    <string name="pref_sync_entry_6_hour">6 hours</string>
+
+    <string name="sync_entry_1_hour">1</string>
+    <string name="sync_entry_2_hours">2</string>
+    <string name="sync_entry_6_hours">6</string>
+    <string name="pref_sync_summary">Synchronize every [%1$s]</string>
+
 </resources>

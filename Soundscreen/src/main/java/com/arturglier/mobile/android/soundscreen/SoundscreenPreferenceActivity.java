@@ -46,6 +46,20 @@ public class SoundscreenPreferenceActivity extends SherlockPreferenceActivity {
             }
         });
 
+        final ListPreference sync = (ListPreference) findPreference("pref_sync");
+        sync.setSummary(getString(R.string.pref_sync_summary, getString(R.string.pref_sync_entry_1_hour)));
+        sync.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                // Set the value as the new value
+                sync.setValue(newValue.toString());
+                // Get the entry which corresponds to the current value and set as summary
+                preference.setSummary(getString(R.string.pref_sync_summary, sync.getEntry().toString()));
+                return false;
+            }
+        });
+
         final EditTextPreference build = (EditTextPreference) findPreference("pref_build");
         try {
             build.setSummary(

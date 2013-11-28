@@ -16,6 +16,13 @@
             android:entries="@array/pref_download_entries"
             android:entryValues="@array/pref_download_values"
             android:defaultValue="@string/pref_download_entry_mobile_and_wifi"/>
+        <ListPreference
+            android:key="pref_sync"
+            android:title="@string/pref_sync"
+            android:dialogTitle="@string/pref_sync"
+            android:entries="@array/pref_sync_entries"
+            android:entryValues="@array/pref_sync_values"
+            android:defaultValue="@string/pref_sync_entry_1_hour"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/pref_category_about">

@@ -22,4 +22,14 @@
         <item>@string/download_entry_mobile_and_wifi</item>
         <item>@string/download_entry_wifi_only</item>
     </string-array>
+    <string-array name="pref_sync_entries">
+        <item>@string/pref_sync_entry_1_hour</item>
+        <item>@string/pref_sync_entry_2_hour</item>
+        <item>@string/pref_sync_entry_6_hour</item>
+    </string-array>
+    <string-array name="pref_sync_values">
+        <item>@string/sync_entry_1_hour</item>
+        <item>@string/sync_entry_2_hours</item>
+        <item>@string/sync_entry_6_hours</item>
+    </string-array>
 </resources>

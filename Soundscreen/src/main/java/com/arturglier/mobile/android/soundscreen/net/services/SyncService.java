@@ -34,6 +34,8 @@ import java.util.ArrayList;
 
 public class SyncService extends IntentService implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    public static final String URL = "/users/stevevaihimself/tracks.json";
+
     private static long EXEC_INTERVAL = 60 * 60 * 1000;
 
     private static final ApiWrapper sWrapper = new ApiWrapper(BuildConfig.CLIENT_ID, BuildConfig.CLIENT_SECRET, null, null);
@@ -101,7 +103,7 @@ public class SyncService extends IntentService implements SharedPreferences.OnSh
         if (PreferenceUtils.downloadPossible(this)) {
             HttpResponse resp = null;
             try {
-                resp = sWrapper.get(Request.to("/users/mr-scruff/tracks.json"));
+                resp = sWrapper.get(Request.to(URL));
                 if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                     String content = Http.getString(resp);
                     Log.d("RESPONSE", Http.formatJSON(content));

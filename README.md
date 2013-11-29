@@ -14,7 +14,7 @@ Project requirements
 	
 	File Service checks for any *left* (CACHED=0 and USED=0) tracks stored in the db. It takes some number of left tracks (*the default number is 10, but can be changed with settings*) and downloads the tracks waveform and artwork and caches them in the internal memory (*this will be changed and made settings dependent*). After the first pair is downloaded the service broadcasts (localy) the ACTION_FILE_AVAILABLE intent which is received by wallpaper engine's receiver. Then the receiver triggers the wallpaper update.
 	
-	The application downloads the files in a batch to prevent the radio from being used inefficiently.
+	The application downloads the files in a batch and it syncs using AlarmManager.setInexactRepeating() to prevent the radio from being used inefficiently.
 
 
 * **[Done]** Make sure network settings are honoured.

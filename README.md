@@ -67,6 +67,7 @@ Remember to replace the CLIENT_ID and CLIENT_SECRET in the build.gradle file wit
 Things to improve
 ---
 
+* Load CLIENT_ID and CLIENT_SECRET from a configuration file
 * Check for storage left when caching files
 * Add some nice exponential backoff mechanism to SyncService
 * Enable wallpaper scrolling

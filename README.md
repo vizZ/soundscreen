@@ -43,6 +43,27 @@ Project requirements
 
 * *[To be done]* Optional: display the name of the track on the home screen
 
+How to build the project
+---
+
+Open the project with Android Studio or delete the ".idea" directory and import the project to your IDE of choice.
+
+Remember to replace the CLIENT_ID and CLIENT_SECRET in the build.gradle file with your own:
+
+	android {
+	    compileSdkVersion 18
+	    buildToolsVersion "19"
+	
+	    defaultConfig {
+	        minSdkVersion 7
+	        targetSdkVersion 18
+	
+	        buildConfig "public static final String CLIENT_ID = \"YOUR_CLIENT_ID\";", \
+	                    "public static final String CLIENT_SECRET = \"YOUR_CLIENT_SECRET\";"
+	    }
+	}
+
+
 Things to improve
 ---
 

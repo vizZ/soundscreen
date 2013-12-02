@@ -43,6 +43,8 @@ android {
 
     buildTypes {
         debug {
+            packageNameSuffix ".debug"
+            versionNameSuffix = "-DEBUG"
             signingConfig signingConfigs.debug
         }
 

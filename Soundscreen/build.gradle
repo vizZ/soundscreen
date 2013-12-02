@@ -21,8 +21,47 @@ android {
         minSdkVersion 7
         targetSdkVersion 18
 
-        buildConfig "public static final String CLIENT_ID = \"YOUR_CLIENT_ID\";", \
-                    "public static final String CLIENT_SECRET = \"YOUR_CLIENT_SECRET\";"
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+
+        release {
+            // Make Android Studio stop complaining for null console object; Use this config from cmd
+            if (System.console() != null) {
+                storeFile file("release.keystore")
+                keyAlias "soundscreen"
+                // Without this ugly hack there is no installRelease task, so it is not possible to
+                // build signed *-release.apk with custom readPasswordFromInput task
+                storePassword ""
+                keyPassword ""
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+task('readPasswordFromInput') << {
+    android.signingConfigs.release {
+        storePassword = new String(System.console().readLine("\n\$ Enter keystore password: "))
+        keyPassword = new String(System.console().readLine("\n\$ Enter key password: "))
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name.matches("validateReleaseSigning")) {
+        task.dependsOn('readPasswordFromInput')
     }
 }
 

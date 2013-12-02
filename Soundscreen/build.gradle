@@ -71,6 +71,11 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
+    applicationVariants.all { variant ->
+        // alter the default outputFile to include versionName suffix
+        variant.outputFile = file(variant.outputFile.name.replace(".apk", "-${variant.mergedFlavor.versionName}.apk"))
+    }
 }
 
 task('readPasswordFromInput') << {

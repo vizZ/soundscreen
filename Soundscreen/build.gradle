@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 buildscript {
     repositories {
         mavenCentral()
@@ -11,6 +13,16 @@ apply plugin: 'android'
 repositories {
     maven { url "http://dl.bintray.com/populov/maven" }
     mavenCentral()
+}
+
+def gitSha() {
+    return 'git rev-parse --short HEAD'.execute().text.trim()
+}
+
+def buildTime() {
+    def df = new SimpleDateFormat("ddMMyyyy")
+    df.setTimeZone(TimeZone.getTimeZone("UTC"))
+    return df.format(new Date())
 }
 
 android {

@@ -75,6 +75,16 @@ android {
     applicationVariants.all { variant ->
         // alter the default outputFile to include versionName suffix
         variant.outputFile = file(variant.outputFile.name.replace(".apk", "-${variant.mergedFlavor.versionName}.apk"))
+
+        // print the APK path after assemble is done
+        variant.assemble.doLast {
+            println variant.outputFile
+        }
+
+        // print the APK path as the last step before install, at which point the apk is complete
+        variant.install?.doFirst { // the install task can be null
+            println variant.outputFile
+        }
     }
 }
 

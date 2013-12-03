@@ -86,6 +86,27 @@ Remember to replace the CLIENT_ID and CLIENT_SECRET in the build.gradle file wit
 	    }
 	}
 
+**Gradle**
+
+If you happen to use Java 6 keep in mind that System.console() call returns null if running "gradle --daemon", so please remove/comment appropriate line in gradle.properties or build with Java 7 (**needs to be fixed/verified, investigating the issue**).
+
+	org.gradle.daemon=true
+
+References:
+
+* [GUI should allow some way to provide character input to interactive child processes](http://issues.gradle.org/browse/GRADLE-1147)
+
+**Produard**
+
+*ActionBarSherlock:*
+
+Warning: com.actionbarsherlock.internal.ActionBarSherlockCompat: can't find referenced class com.actionbarsherlock.BuildConfig
+
+References:
+
+* [[ProGuard] ActionBarSherlockCompat: can't find referenced class com.actionbarsherlock.BuildConfig](https://github.com/JakeWharton/ActionBarSherlock/issues/1001)
+* [Replaced last BuildConfig.DEBUG with ActionBarSherlock.DEBUG](https://github.com/JakeWharton/ActionBarSherlock/pull/1027)
+
 
 Things to improve
 ---

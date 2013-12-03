@@ -43,6 +43,29 @@ Project requirements
 
 * *[To be done]* Optional: display the name of the track on the home screen
 
+Notes on the project
+---
+Doing the same thing the same way over and over again was never my favourite part of every-day programming, so I wanted to try out some new ideas while having this opportunity. And I wanted to have fun ;)
+
+**SQLBuilder**
+
+Writing native SQL code is tedious and error-prone. The idea was/is to introduce a lightweight, flexible and convenient wrapper (probably as a small utility library someday) around native SQL code that helps you generate your SQL code with ease and confidence.
+
+Please treat this idea as an experiment/proof-of-concept rather than finished/polished product/code.
+
+*The next step woud be to add support for constraints in table definitions.*
+
+**ContentProvider, SQLiteOpenHelper and UriMatcher**
+
+Have you ever seen a ContentProvider, SQLiteOpenHelper or UriMatcher serving tens of models in tens of configurations, thus growing and growing to some huge volume? Well, I have, so I wanted to tackle this problem with a first small step - decomposition.
+
+So I've created specialized, model-specific classes encapsulating appropriate functionalities (like TracksHelper for DataSQLiteOpenHelper, TracksMatcher for DataUriMatcher) and made the delegation easy by having them wrapped with a Table enum and enabled iteration over the existing models (by "model" I mean a set of all db-specific classes).
+
+Again, please treat this idea as an experiment/proof-of-concept rather than finished/polished product/code.
+
+*The next step is to try out Provider-specific class and polish handling db migradions with Helper classes (onUpgrade()).*
+
+
 How to build the project
 ---
 

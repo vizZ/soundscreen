@@ -93,6 +93,7 @@ android {
 
 task('readPasswordFromInput') << {
     android.signingConfigs.release {
+        // NOTE: The System.console() call returns null if running using "gradle --daemon" for Java 6
         storePassword = new String(System.console().readPassword("\n\$ Enter keystore password: "))
         keyPassword = new String(System.console().readPassword("\n\$ Enter key password: "))
     }

@@ -68,6 +68,7 @@ android {
         }
 
         release {
+            debuggable false
             signingConfig signingConfigs.release
         }
     }

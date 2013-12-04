@@ -69,22 +69,18 @@ Again, please treat this idea as an experiment/proof-of-concept rather than fini
 How to build the project
 ---
 
-Open the project with Android Studio or delete the ".idea" directory and import the project to your IDE of choice.
+1. Open the project with Android Studio or delete the ".idea" directory and import the project to your IDE of choice.
 
-Remember to replace the CLIENT_ID and CLIENT_SECRET in the build.gradle file with your own:
+2. Create a "soundcloud.properties" file in your main project directory and fill in your client_id and client_secret:
 
-	android {
-	    compileSdkVersion 18
-	    buildToolsVersion "19"
-	
-	    defaultConfig {
-	        minSdkVersion 7
-	        targetSdkVersion 18
-	
-	        buildConfig "public static final String CLIENT_ID = \"YOUR_CLIENT_ID\";", \
-	                    "public static final String CLIENT_SECRET = \"YOUR_CLIENT_SECRET\";"
-	    }
-	}
+		client_id = YOUR_CIENT_ID
+		client_secret = YOUR_CLIENT_SECRET
+		
+3. Place your debug.keystore and release.keystore in your main project directory.
+
+Both "debug.keystore" and "release.keystore" files are gitignored. The idea is to keep them safe away from the github repo, so that the repository hosts only the source code and no credentials of any kind.
+
+The same reasoning applies for the "soundcloud.properties" file.
 
 **Gradle**
 

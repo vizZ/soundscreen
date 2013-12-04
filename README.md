@@ -116,7 +116,7 @@ References:
 
 
 
-Things to improve
+Todo
 ---
 
 * Load CLIENT_ID and CLIENT_SECRET from a configuration file

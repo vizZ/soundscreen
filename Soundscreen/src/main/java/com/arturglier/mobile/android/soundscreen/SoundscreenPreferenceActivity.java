@@ -1,6 +1,5 @@
 package com.arturglier.mobile.android.soundscreen;
 
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -75,14 +74,6 @@ public class SoundscreenPreferenceActivity extends SherlockPreferenceActivity {
         });
 
         final EditTextPreference build = (EditTextPreference) findPreference("pref_build");
-        try {
-            build.setSummary(
-                getString(R.string.pref_build_summary,
-                    getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName
-                )
-            );
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        build.setSummary(getString(R.string.pref_build_summary, BuildConfig.VERSION_NAME));
     }
 }

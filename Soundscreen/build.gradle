@@ -81,8 +81,13 @@ android {
     }
 
     applicationVariants.all { variant ->
-        // alter the default outputFile to include versionName suffix
-        variant.outputFile = file(variant.outputFile.name.replace(".apk", "-${variant.mergedFlavor.versionName}.apk"))
+        // alter the default packageApplication and outputFile to include custom versionName suffix
+        def apk = variant.packageApplication.outputFile;
+        def newName = apk.name.replace(".apk", "-${variant.mergedFlavor.versionName}.apk");
+        variant.packageApplication.outputFile = new File(apk.parentFile, newName);
+        if (variant.zipAlign) {
+            variant.zipAlign.outputFile = new File(apk.parentFile, newName.replace("-unaligned", ""));
+        }
 
         // print the APK path after assemble is done
         variant.assemble.doLast {

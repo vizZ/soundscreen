@@ -103,6 +103,18 @@ References:
 * [[ProGuard] ActionBarSherlockCompat: can't find referenced class com.actionbarsherlock.BuildConfig](https://github.com/JakeWharton/ActionBarSherlock/issues/1001)
 * [Replaced last BuildConfig.DEBUG with ActionBarSherlock.DEBUG](https://github.com/JakeWharton/ActionBarSherlock/pull/1027)
 
+Tests
+---
+Initially the idea was to have [Roboletric](http://robolectric.org/) setup with a bit of sweetnes, like [Mockito](https://code.google.com/p/mockito/) and [FEST Android](http://square.github.io/fest-android/) or to play a little with [RoboSpock](http://robospock.org/). I was also wondering how/if you can test this kind of app with [Robotium](https://code.google.com/p/robotium/) and/or [Calabash](http://calaba.sh/).
+
+Unfortunatelly, while adding robolectric setup I was not able to overcome the issue mentioned in Android Studio 0.3.5 release note, so I introduced a small set of classic instrumentation tests only. You can run them with
+
+References:
+
+* [Android Studio 0.3.5 Released](http://tools.android.com/recent/androidstudio035released)
+* [Could not initialize class org.gradle.internal.nativeplatform.filesystem.FileSystems$DefaultFileSystem](https://code.google.com/p/android/issues/detail?id=62011)
+
+
 
 Things to improve
 ---

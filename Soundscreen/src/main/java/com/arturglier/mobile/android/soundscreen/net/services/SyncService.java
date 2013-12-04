@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 public class SyncService extends IntentService implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    public static final String URL = "/users/stevevaihimself/tracks.json";
+    public static final String URL = "/users/mr-scruff/tracks.json";
 
     private static long EXEC_INTERVAL = 60 * 60 * 1000;
 

@@ -119,7 +119,6 @@ References:
 Todo
 ---
 
-* Load CLIENT_ID and CLIENT_SECRET from a configuration file
 * Check for storage left when caching files
 * Add some nice exponential backoff mechanism to SyncService
 * Enable wallpaper scrolling

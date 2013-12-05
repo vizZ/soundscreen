@@ -25,8 +25,9 @@ public class TracksContractTest extends TestCase {
 
     @SmallTest
     public void testBuildWaveformUri() {
+        Uri param = null;
         try {
-            Uri uri = TracksContract.buildWaveformUri(null);
+            Uri uri = TracksContract.buildWaveformUri(param);
         } catch (Exception e) {
             assertThat(e).isInstanceOf(IllegalArgumentException.class);
         }

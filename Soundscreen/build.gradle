@@ -3,6 +3,9 @@ import java.text.SimpleDateFormat
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.6.+'
@@ -13,6 +16,9 @@ apply plugin: 'android'
 repositories {
     maven { url "http://dl.bintray.com/populov/maven" }
     mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
 }
 
 def gitSha() {
@@ -28,6 +34,18 @@ def buildTime() {
 def soundcloud = new Properties()
 file("soundcloud.properties").withInputStream {
     stream -> soundcloud.load(stream)
+}
+
+sourceSets {
+    unitTest {
+        java.srcDir file('src/test/java')
+        resources.srcDir file('src/test/res')
+    }
+}
+
+configurations {
+    unitTestCompile.extendsFrom runtime
+    unitTestRuntime.extendsFrom unitTestCompile
 }
 
 android {
@@ -126,4 +144,16 @@ dependencies {
     compile 'com.viewpagerindicator:library:2.4.1@aar'
 
     instrumentTestCompile 'com.squareup:fest-android:1.0.+'
+
+    unitTestCompile files("$project.buildDir/classes/release")
+    unitTestCompile 'junit:junit:4.10'
+    unitTestCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
+    unitTestCompile 'com.squareup:fest-android:1.0.+'
+    unitTestCompile 'com.google.android:android:4.0.1.2'
 }
+
+task unitTest(type:Test, dependsOn: assemble) {
+    testClassesDir = project.sourceSets.unitTest.output.classesDir
+    classpath = project.sourceSets.unitTest.runtimeClasspath
+}
+check.dependsOn unitTest

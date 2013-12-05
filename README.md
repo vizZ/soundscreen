@@ -84,9 +84,16 @@ The same reasoning applies for the "soundcloud.properties" file.
 
 **Gradle**
 
-If you happen to use Java 6 keep in mind that System.console() call returns null if running "gradle --daemon", so please remove/comment appropriate line in gradle.properties or build with Java 7 (**needs to be fixed/verified, investigating the issue**).
+If you want to speed up your builds use gradlew with --daemon and --parallel arguments or add these lines to your gradle.properties:
 
 	org.gradle.daemon=true
+    org.gradle.parallel=true
+
+Note:
+
+Keep in mind that System.console() call returns null if running "gradle --daemon" (verified for Java 6 and Java 7), so please remove/comment appropriate line in gradle.properties when running the release build (**I'm trying to find a workaround, for example useing the SwingBuilder**).
+
+	#org.gradle.daemon=true
 
 References:
 
